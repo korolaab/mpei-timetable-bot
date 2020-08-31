@@ -125,6 +125,6 @@ class User:
 
 Выбери пункт ниже 👇""" % ( \
                 message if message else "💎 <b>Привет, здесь ты можешь найти расписание групп МЭИ</b>" \
-             ), reply_markup=get_default_inline_keyboard())
+             ), reply_markup=get_default_inline_keyboard(self))
         self.message_id = m.message_id
         self.db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
