@@ -1,0 +1,17 @@
+version: "3.3"
+
+services:
+  server:
+    build: server/
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8082:8082"
+    command: python3 ./server.py -u
+
+  mongodb:
+    image: mongo:3.3
+    volumes:
+      - /data/mdb:/data/mdb:rw
+    ports:
+      - "27082:27017"
