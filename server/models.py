@@ -107,8 +107,8 @@ class User:
         self.data = None
 
     def send_message(self, message, *args, **kwargs):
-        try: bot.send_message(self.tid, message, parse_mode="html", *args, **kwargs)
-        except apihelper.ApiException as e: print("Error: [%s] (caused by send_message)" % e)
+        try: return bot.send_message(self.tid, message, parse_mode="html", *args, **kwargs)
+        except apihelper.ApiException as e: print("Error: [%s] (caused by send_message)" % e); return False
 
     def delete_message(self, message_id):
         try: bot.delete_message(self.tid, message_id)
@@ -126,5 +126,6 @@ class User:
 Выбери пункт ниже 👇""" % ( \
                 message if message else "💎 <b>Привет, здесь ты можешь найти расписание групп МЭИ</b>" \
              ), reply_markup=get_default_inline_keyboard(self))
-        self.message_id = m.message_id
-        self.db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
+        if m:
+            self.message_id = m.message_id
+            self.db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
