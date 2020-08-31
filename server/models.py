@@ -10,7 +10,7 @@ lock = threading.Lock()
 
 def get_default_inline_keyboard(user):
     return get_inline_keyboard([ \
-        [{"text": "Мое расписание", "callback_data": "timetable_mem"}] if user.group_id else None, \
+        [{"text": "Мое расписание", "callback_data": "timetable_mem"}] if user.group_id else [], \
         [{"text": "Найти группу", "callback_data": "timetable_search"}], \
         [{"text": "Наш репозиторий", "url": "https://github.com/psylopunk/mpei-timetable-bot"}] \
     ], row_width=1)
@@ -18,11 +18,8 @@ def get_default_inline_keyboard(user):
 def get_inline_keyboard(rows, *args, **kwargs):
     keyboard = types.InlineKeyboardMarkup(*args, **kwargs)
     for row in rows:
-        btns = []
-        for btn in row:
-            if "callback_data" in btn: btns.append(types.InlineKeyboardButton(text=btn["text"], callback_data=btn["callback_data"]))
-            elif "url" in btn: btns.append(types.InlineKeyboardButton(text=btn["text"], callback_data=btn["url"]))
-        keyboard.add(*btns)
+        keyboard.add(*[types.InlineKeyboardButton(text=btn["text"],  \
+            callback_data=(btn["callback_data"] if "callback_data" in btn else None), url=(btn["url"] if "url" in btn else None)) for btn in row if btn)
     return keyboard
 
 def get_keyboard(rows, **kwargs):
