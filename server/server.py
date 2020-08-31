@@ -32,7 +32,7 @@ async def s_twebhook(request):
             if text == "Отмена":
                 user.data["msg_ids"].append(data["message_id"])
                 for m_id in user.data["msg_ids"]: user.delete_message(m_id)
-                user.show_welcome()
+                user.send_welcome()
             return response.text("OK")
         if text == "/start":
             user.delete_message(data["message_id"])
