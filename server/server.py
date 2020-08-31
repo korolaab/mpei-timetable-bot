@@ -4,7 +4,6 @@ import config
 
 memory = Memory()
 app = Sanic(__name__)
-bot = TeleBot(config.TELEGRAM_BOT_KEY)
 
 @app.route("/")
 async def s_index(request):
