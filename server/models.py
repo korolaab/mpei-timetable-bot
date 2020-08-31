@@ -177,4 +177,5 @@ class User:
                 lesson["room"] = row.find("span", class_="mpei-galaktika-lessons-grid-room")
                 lesson["grp"] = row.find("span", class_="mpei-galaktika-lessons-grid-grp")
                 lessons[lesson_date].append(lesson)
-        return lesson
+        print(lessons)
+        return lessons
