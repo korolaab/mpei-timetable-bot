@@ -154,7 +154,7 @@ class User:
         self.send_message("""🔰 <b>Расписание на %s</b>
 
 %s""" % (date_obj.strftime("%d.%m"), \
-        "\n".join(["• <b>%s</b>\n   🕐 <i>%s</i> • 📍 %s\n%s" % (lesson["name"], lesson["bells"], \
+        "\n\n".join(["🔘 <b>%s</b>\n   <i>%s</i> • 📍 %s\n%s" % (lesson["name"], lesson["bells"], \
                                 lesson["room"], lesson["type"]) for lesson in day]) if day else "🌀 <b>В этот день нет занятий</b>" \
         ))
 
