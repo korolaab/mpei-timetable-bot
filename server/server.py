@@ -28,21 +28,19 @@ async def s_twebhook(request):
     elif "message" in data:
         data = data["message"]
         user = memory.get_user_by_chat(data["chat"])
+        user.save_message(data["message_id"])
         text = data["text"]
         if user.action:
             if text == "Отмена": user.send_welcome()
             if user.action == "timetable_search_input":
-                user.data["msg_ids"].append(data["message_id"])
                 group_id = models.get_group_id(text)
                 if not group_id:
-                    m_id = user.send_message("⚠️ <b>Группа не найдена</b>\n\n👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
-                    user.data["msg_ids"].append(m_id)
+                    user.send_message("⚠️ <b>Группа не найдена</b>\n\n👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]]))
                     return response.text("OK")
                 user.set_group_id(text, group_id)
                 user.send_welcome(message="✅ <b>Группа сохранена</b>")
             return response.text("OK")
         if text == "/start":
-            user.delete_message(data["message_id"])
             user.send_welcome()
         return response.text("OK")
     return response.text("OK")
