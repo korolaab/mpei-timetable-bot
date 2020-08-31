@@ -129,7 +129,7 @@ class User:
 
     def send_welcome(self, message=None):
         self.clear_action()
-        if msg_ids in self.data:
+        if "msg_ids" in self.data:
             for m_id in self.data["msg_ids"]: self.delete_message(m_id)
         if self.message_id: self.delete_message(self.message_id)
         m = self.send_message("""%s
