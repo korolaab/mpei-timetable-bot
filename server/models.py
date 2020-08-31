@@ -171,11 +171,11 @@ class User:
                 lessons[lesson_date] = []
             else:
                 lesson = {}
-                lesson["bells"] = row.find(class_="mpei-galaktika-lessons-grid-time")
-                lesson["name"] = row.find("span", class_="mpei-galaktika-lessons-grid-name")
-                lesson["type"] = row.find("span", class_="mpei-galaktika-lessons-grid-type")
-                lesson["room"] = row.find("span", class_="mpei-galaktika-lessons-grid-room")
-                lesson["grp"] = row.find("span", class_="mpei-galaktika-lessons-grid-grp")
+                lesson["bells"] = row.find(class_="mpei-galaktika-lessons-grid-time").string.strip()
+                lesson["name"] = row.find("span", class_="mpei-galaktika-lessons-grid-name").string.strip()
+                lesson["type"] = row.find("span", class_="mpei-galaktika-lessons-grid-type").string.strip()
+                lesson["room"] = row.find("span", class_="mpei-galaktika-lessons-grid-room").string.strip()
+                lesson["grp"] = row.find("span", class_="mpei-galaktika-lessons-grid-grp").string.strip()
                 lessons[lesson_date].append(lesson)
         print(lessons)
         return lessons
