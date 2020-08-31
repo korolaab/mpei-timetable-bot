@@ -138,7 +138,7 @@ class User:
 
     def edit_message(self, text, *args, **kwargs):
         try: bot.edit_message_text(chat_id=self.tid, message_id=self.message_id, \
-            text=text, *args, **kwargs)
+            text=text, parse_mode="html", *args, **kwargs)
         except apihelper.ApiException as e: print("Error: [%s] (caused by edit_message)" % e)
 
     def answer_callback(self, cd_id):
