@@ -21,17 +21,19 @@ async def s_twebhook(request):
         #     if group_id[]
         if callback_data == "timetable_search":
             user.action = "timetable_search_input"
-            user.data = {}
-            user.edit_message("👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]]))
+            m_id = user.send_message("👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
+            user.data = {"msg_ids": [m_id]}
         return response.text("OK")
     elif "message" in data:
         data = data["message"]
         user = memory.get_user_by_chat(data["chat"])
         text = data["text"]
-        # if user.action:
-        #     if text == "Отмена":
-        #
-        #     return response.text("OK")
+        if user.action:
+            if text == "Отмена":
+                user.data["msg_ids"].append(data["message_id"])
+                for m_id in user.data["msg_ids"]: user.delete_message(m_id)
+                user.show_welcome()
+            return response.text("OK")
         if text == "/start":
             user.send_welcome()
         return response.text("OK")

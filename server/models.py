@@ -120,6 +120,7 @@ class User:
         except apihelper.ApiException as e: print("Error: [%s] (caused by edit_message)" % e)
 
     def send_welcome(self, message=None):
+        self.clear_action()
         if self.message_id: self.delete_message(self.message_id)
         m = self.send_message("""%s
 
