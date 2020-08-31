@@ -9,7 +9,7 @@ bot = TeleBot(config.TELEGRAM_BOT_KEY)
 def s_index(request):
     return response.text("OK")
 
-@app.route("/t_webhook")
+@app.route("/t_webhook", methods=["GET", "POST"])
 def s_twebhook(request):
     print(request.json)
     data = request.json
