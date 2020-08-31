@@ -1,7 +1,7 @@
 FROM python:latest
 
 ADD server.py /server/
-ADD modules.py /server/
+ADD models.py /server/
 ADD config.py /server/
 ADD requirements.txt /server/
 
