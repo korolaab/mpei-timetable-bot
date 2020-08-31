@@ -4,7 +4,7 @@ import threading
 import config
 
 bot = TeleBot(config.TELEGRAM_BOT_KEY)
-db = pymongo.MongoClient("mongodb", 27017)
+db = pymongo.MongoClient("mongodb", 27017).mpeitt
 lock = threading.Lock()
 
 def get_default_inline_keyboard():
