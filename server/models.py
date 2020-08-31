@@ -19,7 +19,7 @@ def get_inline_keyboard(rows, *args, **kwargs):
     keyboard = types.InlineKeyboardMarkup(*args, **kwargs)
     for row in rows:
         keyboard.add(*[types.InlineKeyboardButton(text=btn["text"],  \
-            callback_data=(btn["callback_data"] if "callback_data" in btn else None), url=(btn["url"] if "url" in btn else None)) for btn in row if btn)
+            callback_data=(btn["callback_data"] if "callback_data" in btn else None), url=(btn["url"] if "url" in btn else None)) for btn in row if btn])
     return keyboard
 
 def get_keyboard(rows, **kwargs):
