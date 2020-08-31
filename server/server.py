@@ -23,7 +23,7 @@ async def s_twebhook(request):
             if not user.group_id:
                 user.send_welcome("⚠️ <b>Нет сохраненной группы</b>\n\nℹ️ <i>Найдите свою группу с помощью кнопок ниже</i>")
                 return response.text("OK")
-            user.send_timetable(datetime.datetime.now())
+            user.send_timetable(datetime.datetime.now() + datetime.timedelta(hours=3))
         if callback_data == "timetable_search":
             user.action = "timetable_search_input"
             m_id = user.send_message("👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
