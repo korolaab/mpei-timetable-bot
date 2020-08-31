@@ -3,3 +3,5 @@ setuptools
 pymongo
 sanic
 pyTelegramBotAPI
+bs4
+html5lib

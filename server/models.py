@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from telebot import TeleBot, types, apihelper
 import requests
 import pymongo
@@ -71,6 +72,7 @@ def get_group_id(name):
             print("Error: [%s] (caused by get_group_id)" % e)
             return False
     return False
+
 
 class Memory:
     def __init__(self):
@@ -155,3 +157,24 @@ class User:
         if m:
             self.message_id = m.message_id
             db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
+
+    def get_timetable_json(self, start=None):
+        if not self.group_id: return False
+        res = requests.post("https://mpei.ru/Education/timetable/Pages/table.aspx?groupoid=%s&start=%s" % (self.group_id, start or ""))
+        parsed_res = BeautifulSoup(res.text, "html5lib").find(class_="mpei-galaktika-lessons-grid-tbl")
+        lessons = {}
+        lesson_date = None
+        for row in parsed_res.find_all("tr")[1:]:
+            lesson_tmp = row.find(class_="mpei-galaktika-lessons-grid-date")
+            if lesson_tmp:
+                lesson_date = lesson_tmp.string.strip()
+                lessons[lesson_date] = []
+            else:
+                lesson = {}
+                lesson["bells"] = row.find(class_="mpei-galaktika-lessons-grid-time")
+                lesson["name"] = row.find("span", class_="mpei-galaktika-lessons-grid-name")
+                lesson["type"] = row.find("span", class_="mpei-galaktika-lessons-grid-type")
+                lesson["room"] = row.find("span", class_="mpei-galaktika-lessons-grid-room")
+                lesson["grp"] = row.find("span", class_="mpei-galaktika-lessons-grid-grp")
+                lessons[lesson_date].append(lesson)
+        return lesson
