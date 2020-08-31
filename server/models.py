@@ -128,4 +128,4 @@ class User:
              ), reply_markup=get_default_inline_keyboard(self))
         if m:
             self.message_id = m.message_id
-            self.db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
+            db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
