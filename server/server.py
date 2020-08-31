@@ -35,6 +35,7 @@ async def s_twebhook(request):
                 user.show_welcome()
             return response.text("OK")
         if text == "/start":
+            user.delete_message(data["message_id"])
             user.send_welcome()
         return response.text("OK")
     return response.text("OK")
