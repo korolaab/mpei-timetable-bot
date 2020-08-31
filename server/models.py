@@ -142,6 +142,21 @@ class User:
         try: bot.answer_callback_query(callback_query_id=cd_id, text="Пункт выбран", show_alert=False)
         except apihelper.ApiException as e: print("Error: [%s] (caused by answer_callback)" % e)
 
+    def send_timetable(self, date_obj):
+        week = self.get_timetable_json(start=date_obj.strftime("%Y.%m.%d"))
+        day = None
+        for d in week:
+            if str(date_obj.day) in d:
+                day = week[d]
+                break
+        self.send_message("""🔰 <b>Расписание на %s</b>
+
+%s""" % (date_obj.strftime("%d.%m"), \
+        "\n".join(["• <b>%s</b>\n   🕐 <i>%s</i> • 📍 %s\n%s" % (lesson["name"], lesson["bells"], \
+                                lesson["room"], lesson["type"]) for lesson in day]) if day else "🌀 <b>В этот день нет занятий</b>" \
+        ))
+
+
     def send_welcome(self, message=None):
         self.clear_action()
         self.clear_messages()
@@ -177,5 +192,4 @@ class User:
                 lesson["room"] = row.find("span", class_="mpei-galaktika-lessons-grid-room").string.strip()
                 lesson["grp"] = row.find("span", class_="mpei-galaktika-lessons-grid-grp").string.strip()
                 lessons[lesson_date].append(lesson)
-        print(lessons)
         return lessons
