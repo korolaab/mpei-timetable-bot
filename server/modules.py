@@ -7,9 +7,9 @@ bot = TeleBot(config.TELEGRAM_BOT_KEY)
 db = pymongo.MongoClient("mongodb", 27017).mpeitt
 lock = threading.Lock()
 
-def get_default_inline_keyboard():
+def get_default_inline_keyboard(user):
     return get_inline_keyboard([ \
-        [{"text": "Мое расписание", "callback_data": "timetable_mem"}], \
+        [{"text": "Мое расписание", "callback_data": "timetable_mem"}] if user.group_id else None, \
         [{"text": "Найти группу", "callback_data": "timetable_search"}], \
         [{"text": "Наш репозиторий", "url": "https://github.com/psylopunk/mpei-timetable-bot"}] \
     ], row_width=1)
@@ -24,6 +24,8 @@ def get_inline_keyboard(rows, *args, **kwargs):
 class Memory:
     def __init__(self):
         self.users = {}
+
+    def hard_update_user(self, user): return User(user.tid)
 
     def get_user_by_chat(self, chat):
         if chat["id"] not in self.users:
@@ -41,7 +43,9 @@ class Memory:
 
 class User:
     def __init__(self, tid):
-        self.tid = tid
+        user_object = db.users.find({"tid": tid})[0]
+        self.tid = user_object["tid"]
+        self.group_id = user_object["group_id"] if "group_id" in user_object else None
 
     def send_message(self, message, *args, **kwargs):
         try: bot.send_message(self.tid, message, parse_mode="html", *args, **kwargs)

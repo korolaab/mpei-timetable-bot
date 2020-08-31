@@ -13,7 +13,13 @@ async def s_index(request):
 async def s_twebhook(request):
     print(request.json)
     data = request.json
-    if "message" in data:
+    if "callback_query" in request.json:
+        data = request.json["callback_query"]
+        user = memory.get_user_by_chat(data["message"]["chat"])
+        callback_data = data["data"]
+        # if callback_data == "timetable_mem":
+        #     if group_id[]
+    elif "message" in data:
         data = data["message"]
         user = memory.get_user_by_chat(data["chat"])
         text = data["text"]
