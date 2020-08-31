@@ -1,4 +1,5 @@
 wheel
 setuptools
+pymongo
 sanic
 pyTelegramBotAPI
