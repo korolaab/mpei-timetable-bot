@@ -160,7 +160,7 @@ class User:
 
     def get_timetable_json(self, start=None):
         if not self.group_id: return False
-        res = requests.post("https://mpei.ru/Education/timetable/Pages/table.aspx?groupoid=%s&start=%s" % (self.group_id, start or ""))
+        res = requests.get("https://mpei.ru/Education/timetable/Pages/table.aspx?groupoid=%s&start=%s" % (self.group_id, start or ""))
         parsed_res = BeautifulSoup(res.text, "html5lib").find(class_="mpei-galaktika-lessons-grid-tbl")
         lessons = {}
         lesson_date = None
