@@ -33,7 +33,7 @@ async def s_twebhook(request):
             if text == "Отмена": user.send_welcome()
             if user.action == "timetable_search_input":
                 user.data["msg_ids"].append(data["message_id"])
-                group_id = get_group_id(text)
+                group_id = models.get_group_id(text)
                 if not group_id:
                     m_id = user.send_message("⚠️ <b>Группа не найдена</b>\n\n👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
                     user.data["msg_ids"].append(m_id)
