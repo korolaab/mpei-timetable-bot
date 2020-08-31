@@ -1,8 +1,8 @@
 from sanic import Sanic, response
-from modules import Memory, User
 import config
+import models
 
-memory = Memory()
+memory = models.Memory()
 app = Sanic(__name__)
 
 @app.route("/")
@@ -19,12 +19,22 @@ async def s_twebhook(request):
         callback_data = data["data"]
         # if callback_data == "timetable_mem":
         #     if group_id[]
+        if callback_data == "timetable_search":
+            user.action = "timetable_search_input"
+            user.data = {}
+            user.edit_message("👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]]))
+        return response.text("OK")
     elif "message" in data:
         data = data["message"]
         user = memory.get_user_by_chat(data["chat"])
         text = data["text"]
+        # if user.action:
+        #     if text == "Отмена":
+        #
+        #     return response.text("OK")
         if text == "/start":
             user.send_welcome()
+        return response.text("OK")
     return response.text("OK")
 
 if __name__ == '__main__':
