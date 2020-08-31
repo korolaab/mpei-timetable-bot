@@ -18,8 +18,11 @@ def get_default_inline_keyboard(user):
 def get_inline_keyboard(rows, *args, **kwargs):
     keyboard = types.InlineKeyboardMarkup(*args, **kwargs)
     for row in rows:
-        keyboard.add(*[types.InlineKeyboardButton(text=btn["text"],  \
-            callback_data=(btn["callback_data"] if "callback_data" in btn else None), url=(btn["url"] if "url" in btn else None)) for btn in row])
+        btns = []
+        for btn in row:
+            if "callback_data" in btn: btns.append(types.InlineKeyboardButton(text=btn["text"], callback_data=btn["callback_data"]))
+            elif "url" in btn: btns.append(types.InlineKeyboardButton(text=btn["text"], callback_data=btn["url"]))
+        keyboard.add(*btns)
     return keyboard
 
 def get_keyboard(rows, **kwargs):
