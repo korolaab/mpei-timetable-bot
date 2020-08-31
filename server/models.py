@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from telebot import TeleBot, types, apihelper
+import datetime
 import requests
 import pymongo
 import threading
@@ -151,12 +152,17 @@ class User:
             if str(date_obj.day) in d:
                 day = week[d]
                 break
-        self.send_message("""🔰 <b>Расписание на %s</b>
+        self.edit_message("""🔰 <b>Расписание на %s</b>
 
 %s""" % (date_obj.strftime("%d.%m"), \
         "\n\n".join(["🔘 <b>%s</b>\n      <i>%s</i> • 📍 %s\n      %s" % (lesson["name"], lesson["bells"], \
                                 lesson["room"], lesson["type"]) for lesson in day]) if day else "🌀 <b>В этот день нет занятий</b>" \
-        ))
+        ), reply_markup=get_inline_keyboard([ \
+            [ \
+                {"text": "⬅️ %s" % (date_obj - datetime.timedelta(days=1)).strftime("%d.%m"), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=1)).timestamp())}, \
+                {"text": "%s ➡️" % (date_obj + datetime.timedelta(days=1)).strftime("%d.%m"), "callback_data": "timetable_mem_%s" % int((date_obj + datetime.timedelta(days=1)).timestamp())}
+            ], [{"text": "На главную 🔙", "callback_data": "home"}] \
+        ]))
 
 
     def send_welcome(self, message=None):

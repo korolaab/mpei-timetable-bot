@@ -24,10 +24,14 @@ async def s_twebhook(request):
                 user.send_welcome("⚠️ <b>Нет сохраненной группы</b>\n\nℹ️ <i>Найдите свою группу с помощью кнопок ниже</i>")
                 return response.text("OK")
             user.send_timetable(datetime.datetime.now() + datetime.timedelta(hours=3))
-        if callback_data == "timetable_search":
+        elif "timetable_mem_" in callback_data:
+            tstamp = int(callback_data.replace("timetable_mem_", ""))
+            user.send_timetable(datetime.datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))
+        elif callback_data == "timetable_search":
             user.action = "timetable_search_input"
             m_id = user.send_message("👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
             user.data = {"msg_ids": [m_id]}
+        elif callback_data == "home": user.send_welcome()
         return response.text("OK")
     elif "message" in data:
         data = data["message"]
