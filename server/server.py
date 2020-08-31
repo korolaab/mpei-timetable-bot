@@ -20,6 +20,7 @@ async def s_twebhook(request):
         # if callback_data == "timetable_mem":
         #     if group_id[]
         if callback_data == "timetable_search":
+            user.answer_callback(data["id"])
             user.action = "timetable_search_input"
             m_id = user.send_message("👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
             user.data = {"msg_ids": [m_id]}
@@ -29,10 +30,16 @@ async def s_twebhook(request):
         user = memory.get_user_by_chat(data["chat"])
         text = data["text"]
         if user.action:
-            if text == "Отмена":
+            if text == "Отмена": user.send_welcome()
+            if user.action == "timetable_search_input":
                 user.data["msg_ids"].append(data["message_id"])
-                for m_id in user.data["msg_ids"]: user.delete_message(m_id)
-                user.send_welcome()
+                group_id = get_group_id(text)
+                if not group_id:
+                    m_id = user.send_message("⚠️ <b>Группа не найдена</b>\n\n👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
+                    user.data["msg_ids"].append(m_id)
+                    return response.text("OK")
+                user.set_group_id(group_id)
+                user.send_welcome(message="✅ <b>Группа сохранена</b>")
             return response.text("OK")
         if text == "/start":
             user.delete_message(data["message_id"])

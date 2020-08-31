@@ -106,6 +106,10 @@ class User:
         self.action = None
         self.data = None
 
+    def set_group_id(self, group_id):
+        self.group_id = group_id
+        db.users.update_one({"_id": self.db_id}, {"$set": {"group_id": group_id}})
+
     def send_message(self, message, *args, **kwargs):
         try: return bot.send_message(self.tid, message, parse_mode="html", *args, **kwargs)
         except apihelper.ApiException as e: print("Error: [%s] (caused by send_message)" % e); return False
@@ -119,8 +123,14 @@ class User:
             text=text, *args, **kwargs)
         except apihelper.ApiException as e: print("Error: [%s] (caused by edit_message)" % e)
 
+    def answer_callback(self, cd_id):
+        try: bot.answer_callback_query(callback_query_id=cd_id, text="Пункт выбран", show_alert=False)
+        except apihelper.ApiException as e: print("Error: [%s] (caused by answer_callback)" % e)
+
     def send_welcome(self, message=None):
         self.clear_action()
+        if self.data["msg_ids"]:
+            for m_id in self.data["msg_ids"]: self.delete_message(m_id)
         if self.message_id: self.delete_message(self.message_id)
         m = self.send_message("""%s
 
