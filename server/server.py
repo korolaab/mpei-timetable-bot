@@ -7,11 +7,11 @@ app = Sanic(__name__)
 bot = TeleBot(config.TELEGRAM_BOT_KEY)
 
 @app.route("/")
-await def s_index(request):
+async def s_index(request):
     return response.text("OK")
 
 @app.route("/t_webhook", methods=["GET", "POST"])
-await def s_twebhook(request):
+async def s_twebhook(request):
     print(request.json)
     data = request.json
     if "message" in data:
