@@ -112,6 +112,8 @@ class User:
     def clear_messages(self):
         for message_id in self.history_messages_id:
             self.delete_message(message_id)
+        self.history_messages_id = []
+        db.users.update_one({"_id": self.db_id}, {"$set": {"history_messages_id": []}})
 
     def save_message(self, message_id):
         self.history_messages_id.append(message_id)
