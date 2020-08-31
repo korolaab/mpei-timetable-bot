@@ -97,6 +97,7 @@ class User:
         user_object = db.users.find({"tid": tid})[0]
         self.db_id = user_object["_id"]
         self.tid = user_object["tid"]
+        self.group = user_object["group"] if "group" in user_object else None
         self.group_id = user_object["group_id"] if "group_id" in user_object else None
         self.message_id = user_object["message_id"] if "message_id" in user_object else None
 
@@ -106,9 +107,10 @@ class User:
         self.action = None
         self.data = {}
 
-    def set_group_id(self, group_id):
+    def set_group_id(self, group, group_id):
+        self.group = group.upper()
         self.group_id = group_id
-        db.users.update_one({"_id": self.db_id}, {"$set": {"group_id": group_id}})
+        db.users.update_one({"_id": self.db_id}, {"$set": {"group": self.group, "group_id": self.group_id}})
 
     def send_message(self, message, *args, **kwargs):
         try: return bot.send_message(self.tid, message, parse_mode="html", *args, **kwargs)
@@ -134,8 +136,11 @@ class User:
         if self.message_id: self.delete_message(self.message_id)
         m = self.send_message("""%s
 
+%s
+
 Выбери пункт ниже 👇""" % ( \
-                message if message else "💎 <b>Привет, здесь ты можешь найти расписание групп МЭИ</b>" \
+                (message if message else "💎 <b>Привет, здесь ты можешь найти расписание групп МЭИ</b>"), \
+                ("👥 Ваша группа: <b>%s</b>" % self.group if self.group else "⚠️ <b>Группа не выбрана</b>\n<i>Найдите свою группу с помощью кнопки под сообщением для начала работы</i>") \
              ), reply_markup=get_default_inline_keyboard(self))
         if m:
             self.message_id = m.message_id

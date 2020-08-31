@@ -38,7 +38,7 @@ async def s_twebhook(request):
                     m_id = user.send_message("⚠️ <b>Группа не найдена</b>\n\n👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
                     user.data["msg_ids"].append(m_id)
                     return response.text("OK")
-                user.set_group_id(group_id)
+                user.set_group_id(text, group_id)
                 user.send_welcome(message="✅ <b>Группа сохранена</b>")
             return response.text("OK")
         if text == "/start":
