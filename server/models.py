@@ -82,9 +82,8 @@ class Memory:
         if chat["id"] not in self.users:
             if db.users.count_documents({"tid": chat["id"]}) == 0:
                 user_object = {"tid": chat["id"], "balance": 0.0}
-                if "first_name" in chat: user_object["first_name"] = chat["first_name"]
-                if "last_name" in chat: user_object["last_name"] = chat["last_name"]
-                if "username" in chat: user_object["username"] = chat["username"]
+                for key in ["first_name", "last_name", "username", "phone"]:
+                    if key in chat: user_object[key] = chat[key]
                 db.users.insert_one(user_object)
                 user = User(user_object["tid"])
             else: user = User(chat["id"])
