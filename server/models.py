@@ -99,7 +99,7 @@ class User:
         self.group = user_object["group"] if "group" in user_object else None
         self.group_id = user_object["group_id"] if "group_id" in user_object else None
         self.message_id = user_object["message_id"] if "message_id" in user_object else None
-        self.history_messages_id = user_object["history_messages_id"] if "history_messages_id" in user_object else None
+        self.history_messages_id = user_object["history_messages_id"] if "history_messages_id" in user_object else []
 
         self.clear_action()
 
