@@ -26,7 +26,7 @@ async def s_twebhook(request):
             if not user.group_id:
                 user.send_welcome("⚠️ <b>Нет сохраненной группы</b>\n\nℹ️ <i>Найдите свою группу с помощью кнопок ниже</i>")
                 return response.text("OK")
-            user.send_timetable(datetime.datetime.now() + datetime.timedelta(hours=3))
+            user.send_timetable(datetime.datetime.now())
         elif "timetable_mem_" in callback_data:
             tstamp = int(callback_data.replace("timetable_mem_", ""))
             user.send_timetable(datetime.datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))

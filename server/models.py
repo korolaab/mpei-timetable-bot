@@ -169,11 +169,15 @@ class User:
                                 lesson["room"], lesson["type"]) for lesson in day]) if day else "🌀 <b>В этот день нет занятий</b>" \
         ), reply_markup=get_inline_keyboard([ \
             [ \
-                {"text": "⏪ %s, %s" % ((date_obj - datetime.timedelta(days=7)).strftime("%d.%m"), get_weekday_name(date_obj - datetime.timedelta(days=7))), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=7)).timestamp())},
                 {"text": "◀️ %s, %s" % ((date_obj - datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj - datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=1)).timestamp())}, \
-                {"text": "%s, %s ▶️" % ((date_obj + datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj + datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj + datetime.timedelta(days=1)).timestamp())}, \
+                {"text": "%s, %s ▶️" % ((date_obj + datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj + datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj + datetime.timedelta(days=1)).timestamp())} \
+            ], \
+            [ \
+                {"text": "⏪ %s, %s" % ((date_obj - datetime.timedelta(days=7)).strftime("%d.%m"), get_weekday_name(date_obj - datetime.timedelta(days=7))), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=7)).timestamp())},
+                {"text": "Сегодня", "callback_data": "timetable_mem"} if datetime.datetime.now().strftime("%d.%m.%Y") != date_obj.strftime("%d.%m.%Y") else {}
                 {"text": "%s, %s ⏩" % ((date_obj + datetime.timedelta(days=7)).strftime("%d.%m"), get_weekday_name(date_obj + datetime.timedelta(days=7))), "callback_data": "timetable_mem_%s" % int((date_obj + datetime.timedelta(days=7)).timestamp())}
-            ], [{"text": "На главную 🔙", "callback_data": "home"}] \
+            ], \
+            [{"text": "На главную 🔙", "callback_data": "home"}] \
         ], row_width=4))
 
 
