@@ -29,6 +29,8 @@ def get_keyboard(rows, **kwargs):
     for row in rows: keyboard.add(*[types.KeyboardButton(button) for button in row])
     return keyboard
 
+def get_weekday_name(date_obj): return ["пн", "вт", "ср", "чт", "пт", "сб", "вс"][date_obj.weekday()]
+
 def get_group_id(name):
     r_url = requests.post("https://mpei.ru/Education/timetable/Pages/default.aspx", \
         {
@@ -159,16 +161,16 @@ class User:
             if str(date_obj.day) in d:
                 day = week[d]
                 break
-        self.edit_message("""🔰 <b>Расписание на %s</b>
+        self.edit_message("""🔰 <b>Расписание на %s, %s</b>
 
-%s""" % (date_obj.strftime("%d.%m"), \
+%s""" % (date_obj.strftime("%d.%m"), get_weekday_name(date_obj), \
         "\n\n".join([ \
             "%s <b>%s</b>\n      <i>%s</i>\n      📍 %s\n      <code>%s</code>" % ("🔘", lesson["name"], lesson["bells"], \
                                 lesson["room"], lesson["type"]) for lesson in day]) if day else "🌀 <b>В этот день нет занятий</b>" \
         ), reply_markup=get_inline_keyboard([ \
             [ \
-                {"text": "⬅️ %s" % (date_obj - datetime.timedelta(days=1)).strftime("%d.%m"), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=1)).timestamp())}, \
-                {"text": "%s ➡️" % (date_obj + datetime.timedelta(days=1)).strftime("%d.%m"), "callback_data": "timetable_mem_%s" % int((date_obj + datetime.timedelta(days=1)).timestamp())}
+                {"text": "⬅️ %s, %s" % ((date_obj - datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj - datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=1)).timestamp())}, \
+                {"text": "%s, %s ➡️" % ((date_obj + datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj + datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj + datetime.timedelta(days=1)).timestamp())}
             ], [{"text": "На главную 🔙", "callback_data": "home"}] \
         ]))
 
