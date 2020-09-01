@@ -42,7 +42,7 @@ async def s_twebhook(request):
 
 Покажи своему другу QR-код сообщением ниже или перешли ему это сообщение с ссылкой
 
-%s""" % ("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % user.group) if user.group else "")))
+%s""" % ("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % user.group) if user.group else "")), reply_markup=models.get_inline_keyboard([[{"text": "На главную 🔙", "callback_data": "home"}]]))
             with open("/data/qr_codes/%s.png" % qr_file, "rb") as file: user.send_photo(file)
         elif callback_data == "feedback":
             user.edit_message("""❓ <b>Обратная связь</b>
