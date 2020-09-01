@@ -6,7 +6,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     volumes:
-      - /data/qr_codes:data/qr_codes:rw
+      - /data/qr_codes:/data/qr_codes:rw
     ports:
       - "8082:8082"
     command: python3 ./server.py -u
