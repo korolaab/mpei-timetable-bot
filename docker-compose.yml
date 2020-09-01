@@ -9,7 +9,7 @@ services:
       - /data/qr_codes:/data/qr_codes:rw
     ports:
       - "8082:8082"
-    command: python3 ./server.py -u
+    command: sh -c "ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && python3 ./server.py -u
 
   mongodb:
     image: mongo:3.3
