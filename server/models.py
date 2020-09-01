@@ -162,7 +162,7 @@ class User:
         self.edit_message("""🔰 <b>Расписание на %s</b>
 
 %s""" % (date_obj.strftime("%d.%m"), \
-        "\n\n".join(["🔘 <b>%s</b>\n      <i>%s</i>      📍 %s\n      <code>%s</code>" % (lesson["name"], lesson["bells"], \
+        "\n\n".join(["🔘 <b>%s</b>\n      <i>%s</i>\n      📍 %s\n      <code>%s</code>" % (lesson["name"], lesson["bells"], \
                                 lesson["room"], lesson["type"]) for lesson in day]) if day else "🌀 <b>В этот день нет занятий</b>" \
         ), reply_markup=get_inline_keyboard([ \
             [ \
