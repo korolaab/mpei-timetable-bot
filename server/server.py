@@ -38,6 +38,11 @@ async def s_twebhook(request):
             qr.add_data("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group) if self.group else ""))
             qr_file = "%s" % uuid.uuid4()
             qr.make_image(fill_color="black", back_color="white").save("/data/qr_codes/%s.png" % qr_file)
+            user.edit_message("""💎 <b>Поделиться с друзьями</b>
+
+Покажи своему другу QR-код сообщением ниже или перешли ему это сообщение с ссылкой
+
+%s""" % ("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group) if self.group else "")))
             with open("/data/qr_codes/%s.png" % qr_file, "rb") as file: user.send_photo(file)
         elif callback_data == "feedback":
             user.edit_message("""❓ <b>Обратная связь</b>
