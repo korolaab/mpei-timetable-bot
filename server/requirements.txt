@@ -5,3 +5,4 @@ sanic
 pyTelegramBotAPI
 bs4
 html5lib
+qrcode[pil]

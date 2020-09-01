@@ -1,7 +1,9 @@
 from sanic import Sanic, response
 import config
 import datetime
+import uuid
 import models
+import qrcode
 
 memory = models.Memory()
 app = Sanic(__name__)
@@ -31,6 +33,22 @@ async def s_twebhook(request):
             user.action = "timetable_search_input"
             m_id = user.send_message("👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
             user.data = {"msg_ids": [m_id]}
+        elif callback_data == "share":
+            qr = qrcode.QRCode(version=4, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10,border=1)
+            qr.add_data("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group) if self.group else ""))
+            qr_file = "%s" % uuid.uuid4()
+            qr.make_image(fill_color="black", back_color="white").save("/data/qr_codes/%s.png" % qr_file)
+            with open("/data/qr_codes/%s.png" % qr_file, "rb") as file: user.send_photo(file)
+        elif callback_data == "feedback":
+            user.edit_message("""❓ <b>Обратная связь</b>
+
+Кто сделал этого бота? <a href="https://gurov.co/">gurov.co</a>
+
+По всем вопросам обращайтесь к @psylopunk""", \
+                reply_markup=models.get_inline_keyboard([ \
+                [{"text": "Написать администратору", "url": "https://t.me/psylopunk"}],
+                [{"text": "На главную 🔙", "callback_data": "home"}]
+            ]))
         elif callback_data == "home": user.send_welcome()
         return response.text("OK")
     elif "message" in data:

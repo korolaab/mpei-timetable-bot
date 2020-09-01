@@ -13,9 +13,9 @@ lock = threading.Lock()
 def get_default_inline_keyboard(user):
     return get_inline_keyboard([ \
         [{"text": "Мое расписание", "callback_data": "timetable_mem"}] if user.group_id else [], \
-        [{"text": "Найти группу", "callback_data": "timetable_search"}], \
-        [{"text": "Наш репозиторий", "url": "https://github.com/psylopunk/mpei-timetable-bot"}] \
-    ], row_width=1)
+        [{"text": "Найти группу" if not user.group_id else "Изменить группу", "callback_data": "timetable_search"}], \
+        [{"text": "Поделиться с друзьями", "callback_data": "share"}, {"text": "Обратная связь", "callback_data": "feedback"}] \
+    ], row_width=2)
 
 def get_inline_keyboard(rows, *args, **kwargs):
     keyboard = types.InlineKeyboardMarkup(*args, **kwargs)
@@ -131,6 +131,13 @@ class User:
             if save: self.save_message(r.message_id)
             return r
         except apihelper.ApiException as e: print("Error: [%s] (caused by send_message)" % e); return False
+
+    def send_photo(self, photo, save=True):
+        try:
+            r = bot.send_photo(self.tid, photo)
+            if save: self.save_message(r.message_id)
+            return r
+        except apihelper.ApiException as e: print("Error: [%s] (caused by send_photo)" % e); return False
 
     def delete_message(self, message_id):
         try: bot.delete_message(self.tid, message_id)
