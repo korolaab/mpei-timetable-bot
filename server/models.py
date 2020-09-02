@@ -158,7 +158,7 @@ class User:
         ], row_width=3))
 
     def send_share(self):
-        qr = qrcode.QRCode(version=4, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10,border=1)
+        qr = qrcode.QRCode(version=4, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=3)
         qr.add_data("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group.encode("utf8").hex()) if self.group else ""))
         qr_file = "%s" % uuid.uuid4()
         qr.make_image(fill_color="black", back_color="white").save("/data/qr_codes/%s.png" % qr_file)
