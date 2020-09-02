@@ -175,7 +175,7 @@ class User:
         datestrf = date_obj.strftime("%Y.%m.%d")
         # TODO request exceptions
         res = requests.get("http://ts.mpei.ru/api/schedule/group/%s" % self.group_id, {"start": datestrf, "finish": datestrf, "lng": 1}).json()
-        print(res)
+        # print(res)
         lessons = []
         for lesson in res:
             lesson_obj = {}

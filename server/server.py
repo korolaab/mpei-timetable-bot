@@ -14,8 +14,6 @@ async def s_index(request):
 
 @app.route("/t_webhook", methods=["GET", "POST"])
 async def s_twebhook(request):
-    print(datetime.datetime.now())
-    print(request.json)
     data = request.json
     if "callback_query" in request.json:
         data = request.json["callback_query"]
