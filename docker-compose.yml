@@ -14,6 +14,7 @@ services:
   mongodb:
     image: mongo:3.3
     volumes:
-      - /data/mdb:/data/db:rw
+      - /data/mdb:/data/mdb:rw
     ports:
       - "27082:27017"
+    command: mongod --noauth --dbpath /data/mdb
