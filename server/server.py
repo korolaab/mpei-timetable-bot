@@ -65,11 +65,11 @@ async def s_twebhook(request):
         if user.action:
             if text == "Отмена": user.send_welcome()
             if user.action == "timetable_search_input":
-                group_id = models.get_group_id(text)
+                group_id, group_name = models.get_group_id(text)
                 if not group_id:
                     user.send_message("⚠️ <b>Группа не найдена</b>\n\n👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]]))
                     return response.text("OK")
-                user.set_group_id(text, group_id)
+                user.set_group(group_name, group_id)
                 user.send_welcome(message="✅ <b>Группа сохранена</b>")
             return response.text("OK")
         if text == "/start":

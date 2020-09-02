@@ -32,50 +32,10 @@ def get_keyboard(rows, **kwargs):
 def get_weekday_name(date_obj): return ["пн", "вт", "ср", "чт", "пт", "сб", "вс"][date_obj.weekday()]
 
 def get_group_id(name):
-    r_url = requests.post("https://mpei.ru/Education/timetable/Pages/default.aspx", \
-        {
-            'MSOWebPartPage_PostbackSource': '',
-            'MSOTlPn_SelectedWpId': '',
-            'MSOTlPn_View': '0',
-            'MSOTlPn_ShowSettings': 'False',
-            'MSOGallery_SelectedLibrary': '',
-            'MSOGallery_FilterString': '',
-            'MSOTlPn_Button': 'none',
-            '__EVENTTARGET': '',
-            '__EVENTARGUMENT': '',
-            '__REQUESTDIGEST': '0x754E29870BD2C554BDB331DDC7A883C1EDA9A365E654B6307AFDCB38F4A37A5A3C550017E868FD8E9DB0834AD7605A501D84AF4EEC0ECEBAC10637986A3AC585,31 Aug 2020 12',
-            'MSOSPWebPartManager_DisplayModeName': 'Browse',
-            'MSOSPWebPartManager_ExitingDesignMode': 'false',
-            'MSOWebPartPage_Shared': '',
-            'MSOLayout_LayoutChanges': '',
-            'MSOLayout_InDesignMode': '',
-            '_wpSelected': '',
-            '_wzSelected': '',
-            'MSOSPWebPartManager_OldDisplayModeName': 'Browse',
-            'MSOSPWebPartManager_StartWebPartEditingName': 'false',
-            'MSOSPWebPartManager_EndWebPartEditing': 'false',
-            '_maintainWorkspaceScrollPosition': '0',
-            '__VIEWSTATE': '/wEPDwUBMA9kFgJmD2QWAgIBD2QWBAIBD2QWBAIJD2QWAmYPZBYCAgEPFgIeE1ByZXZpb3VzQ29udHJvbE1vZGULKYgBTWljcm9zb2Z0LlNoYXJlUG9pbnQuV2ViQ29udHJvbHMuU1BDb250cm9sTW9kZSwgTWljcm9zb2Z0LlNoYXJlUG9pbnQsIFZlcnNpb249MTQuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49NzFlOWJjZTExMWU5NDI5YwFkAhgPZBYCAgcPFgIfAAsrBAFkAgMPZBYMAgMPZBYCBSZnXzUwMjYxM2E0X2Q0MDVfNDFiZl9hNDAxXzJjNDJiMmZhNjVjYQ9kFgRmDxYCHgdWaXNpYmxlaGQCAQ8WAh8BaGQCBw9kFgRmD2QWBAIBDxYCHwFoFgJmD2QWBAICD2QWBgIBDxYCHwFoZAIDDxYIHhNDbGllbnRPbkNsaWNrU2NyaXB0BYEBamF2YVNjcmlwdDpDb3JlSW52b2tlKCdUYWtlT2ZmbGluZVRvQ2xpZW50UmVhbCcsMSwgMzksICdodHRwczpcdTAwMmZcdTAwMmZtcGVpLnJ1XHUwMDJmRWR1Y2F0aW9uXHUwMDJmdGltZXRhYmxlJywgLTEsIC0xLCAnJywgJycpHhhDbGllbnRPbkNsaWNrTmF2aWdhdGVVcmxkHihDbGllbnRPbkNsaWNrU2NyaXB0Q29udGFpbmluZ1ByZWZpeGVkVXJsZB4MSGlkZGVuU2NyaXB0BSJUYWtlT2ZmbGluZURpc2FibGVkKDEsIDM5LCAtMSwgLTEpZAIFDxYCHwFoZAIDDw8WCh4JQWNjZXNzS2V5BQEvHg9BcnJvd0ltYWdlV2lkdGgCBR4QQXJyb3dJbWFnZUhlaWdodAIDHhFBcnJvd0ltYWdlT2Zmc2V0WGYeEUFycm93SW1hZ2VPZmZzZXRZAusDZGQCAw9kFgJmD2QWAgIDD2QWAgIDD2QWAgIBDzwrAAUBAA8WAh4PU2l0ZU1hcFByb3ZpZGVyBRFDdXJyZW50TmF2aWdhdGlvbmRkAgEPZBYEAgIPZBYCZg9kFgJmDxQrAANkZGRkAgQPDxYEHgRUZXh0BUvQl9Cw0L/Rg9GB0Log0L/QsNC90LXQu9C4INC80L7QvdC40YLQvtGA0LjQvdCz0LAg0YDQsNC30YDQsNCx0L7RgtGH0LjQutC+0LIfAWhkZAITD2QWAgIBDxAWAh8BaGQUKwEAZAIXD2QWAgIBD2QWAmYPZBYCZg8PZBYGHgVjbGFzcwUibXMtc2J0YWJsZSBtcy1zYnRhYmxlLWV4IHM0LXNlYXJjaB4LY2VsbHBhZGRpbmcFATAeC2NlbGxzcGFjaW5nBQEwZAIZD2QWBAIMD2QWAgIDD2QWAgIBDxYCHwALKwQBZAIQD2QWAgIDD2QWBAIDDxYCHwALKwQBZAIFDxYCHwALKwQBZAIfD2QWAgIBD2QWAmYPZBYCAgMPZBYCAgUPDxYEHgZIZWlnaHQbAAAAAAAAeUABAAAAHgRfIVNCAoABZBYCAgEPPCsACQEADxYEHg1QYXRoU2VwYXJhdG9yBAgeDU5ldmVyRXhwYW5kZWRnZGQYAQUZY3RsMDAkVG9wTmF2aWdhdGlvbk1lbnVWNA8PZAUW0J7QsdGA0LDQt9C+0LLQsNC90LjQtWSgMQgmzHTTQDzzuiEAKKQcyeF62Q==',
-            '__VIEWSTATEGENERATOR': 'BAB98CB3',
-            '__EVENTVALIDATION': '/wEWBwKhuP7zDgLNrvW5AwKOtvisAQKb+Y7OBAKb+fryCwK3soGRCwK3spXsAwGtAfOd8/pKk9+W++I15dq+fmYQ',
-            'InputKeywords': 'Найти',
-            'ctl00$PlaceHolderSearchArea$ctl01$ctl03': '0',
-            'ctl00$ctl30$g_f0649160_e72e_4671_a36b_743021868df5$ctl03': '%s' % name,
-            'ctl00$ctl30$g_f0649160_e72e_4671_a36b_743021868df5$ctl04': '>>',
-            'ctl00$ctl30$g_b96f4f86_bef6_432f_8a67_f25ef9a781ae$ctl00': '',
-            '__spDummyText1': '',
-            '__spDummyText2': '',
-            '_wpcmWpid': ''
-        }
-    ).url
-    if "default.aspx" in r_url: return False
-    elif "table.aspx" in r_url:
-        try: return r_url[r_url.find("=") + 1:r_url.find("&")]
-        except Exception as e:
-            print("Error: [%s] (caused by get_group_id)" % e)
-            return False
-    return False
-
+    try: res = requests.get("http://ts.mpei.ru/api/search", {"term": name, "type": "group"}).json()
+    except Exception as e: print("Error: [%s] (caused by get_group_id)" % e); return False
+    if len(res) == 1: return res[0]["id"], res[0]["label"]
+    else: return False, False
 
 class Memory:
     def __init__(self):
@@ -122,7 +82,7 @@ class User:
         self.history_messages_id.append(message_id)
         db.users.update_one({"_id": self.db_id}, {"$set": {"history_messages_id": self.history_messages_id}})
 
-    def set_group_id(self, group, group_id):
+    def set_group(self, group, group_id):
         self.group = group.upper()
         self.group_id = group_id
         db.users.update_one({"_id": self.db_id}, {"$set": {"group": self.group, "group_id": self.group_id}})
@@ -155,18 +115,26 @@ class User:
         except apihelper.ApiException as e: print("Error: [%s] (caused by answer_callback)" % e)
 
     def send_timetable(self, date_obj):
-        week = self.get_timetable_json(start=date_obj.strftime("%Y.%m.%d"))
-        day = None
-        for d in week:
-            if str(date_obj.day) in d:
-                day = week[d]
-                break
+        day = self.get_timetable_json(date_obj)
+        lessons_message = ""
+        time_now = datetime.datetime.now()
+        for lesson in day:
+            if time_now < lesson["beginLesson"]:
+                lessons_message += "⚪️ "
+            elif time_now > lesson["beginLesson"] and time_now < lesson["endLesson"]:
+                lessons_message += "🟡 "
+            elif time_now > lesson["endLesson"]:
+                lessons_message += "🟢 "
+            lessons_message += """<b>%s</b>
+      <i>%s - %s</i>
+      📍 %s
+      👨‍🏫 %s
+      <code>%s</code>""" % (lesson["name"], lesson["beginLesson"].strftime("%H:%M"), lesson["endLesson"].strftime("%H:%M"), \
+                lesson["place"], lesson["lecturer"] if "!" not in lesson["lecturer"] else "<i>Нет информации</i>", lesson["type"])
         self.edit_message("""🔰 <b>Расписание на %s, %s</b>
 
 %s""" % (date_obj.strftime("%d.%m"), get_weekday_name(date_obj), \
-        "\n\n".join([ \
-            "%s <b>%s</b>\n      <i>%s</i>\n      📍 %s\n      <code>%s</code>" % ("🔘", lesson["name"], lesson["bells"], \
-                                lesson["room"], lesson["type"]) for lesson in day]) if day else "🌀 <b>В этот день нет занятий</b>" \
+        lessons_message if lessons_message else "🌀 <b>В этот день нет занятий</b>" \
         ), reply_markup=get_inline_keyboard([ \
             [ \
                 {"text": "◀️ %s, %s" % ((date_obj - datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj - datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=1)).timestamp())}, \
@@ -197,23 +165,19 @@ class User:
             self.message_id = m.message_id
             db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
 
-    def get_timetable_json(self, start=None):
+    def get_timetable_json(self, date_obj):
         if not self.group_id: return False
-        res = requests.get("https://mpei.ru/Education/timetable/Pages/table.aspx?groupoid=%s&start=%s" % (self.group_id, start or ""))
-        parsed_res = BeautifulSoup(res.text, "html5lib").find(class_="mpei-galaktika-lessons-grid-tbl")
-        lessons = {}
-        lesson_date = None
-        for row in parsed_res.find_all("tr")[1:]:
-            lesson_tmp = row.find(class_="mpei-galaktika-lessons-grid-date")
-            if lesson_tmp:
-                lesson_date = lesson_tmp.string.strip()
-                lessons[lesson_date] = []
-            else:
-                lesson = {}
-                lesson["bells"] = row.find(class_="mpei-galaktika-lessons-grid-time").string.strip()
-                lesson["name"] = row.find("span", class_="mpei-galaktika-lessons-grid-name").string.strip()
-                lesson["type"] = row.find("span", class_="mpei-galaktika-lessons-grid-type").string.strip()
-                lesson["room"] = row.find("span", class_="mpei-galaktika-lessons-grid-room").string.strip()
-                lesson["grp"] = row.find("span", class_="mpei-galaktika-lessons-grid-grp").string.strip()
-                lessons[lesson_date].append(lesson)
+        datestrf = date_obj.strftime("%Y.%m.%d")
+        # TODO request exceptions
+        res = requests.get("http://ts.mpei.ru/api/schedule/group/%s" % self.group_id, {"start": datestrf, "finish": datestrf, "lng": 1}).json()
+        lessons = []
+        for lesson in res:
+            lesson_obj = {}
+            lesson_obj["name"] = lesson["discipline"]
+            lesson_obj["type"] = lesson["kindOfWork"]
+            lesson_obj["place"] = "%s (%s)" % (lesson["auditorium"], lesson["building"] if "building" in lesson else "нет информации")
+            lesson_obj["lecturer"] = lesson["lecturer"]
+            lesson_obj["beginLesson"] = date_obj.replace(hour=int(lesson_obj["beginLesson"].split(":")[0]), minute=int(lesson_obj["beginLesson"].split(":")[1]))
+            lesson_obj["endLesson"] = date_obj.replace(hour=int(lesson_obj["endLesson"].split(":")[0]), minute=int(lesson_obj["endLesson"].split(":")[1]))
+            lessons.append(lesson_obj)
         return lessons
