@@ -135,9 +135,7 @@ class User:
                 lesson["place"], lesson["lecturer"] if "!" not in lesson["lecturer"] else "<i>Нет информации</i>", lesson["type"])
         self.edit_message("""🔰 <b>Расписание на %s, %s</b>
 
-%s
-
-🟡 <b>Пара идет</b>
+%s🟡 <b>Пара идет</b>
 🟢 <b>Пара закончилась</b>""" % (date_obj.strftime("%d.%m"), get_weekday_name(date_obj), \
         lessons_message if lessons_message else "🌀 <b>В этот день нет занятий</b>" \
         ), reply_markup=get_inline_keyboard([ \
