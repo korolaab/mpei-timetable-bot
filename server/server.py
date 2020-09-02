@@ -62,6 +62,10 @@ async def s_twebhook(request):
                 user.send_welcome(message="✅ <b>Группа сохранена</b>")
             return response.text("OK")
         if text == "/start":
+            group = text.replace("/start", "").strip()
+            if group:
+                group_id, group_name = models.get_group_id(group)
+                if group_id: user.set_group(group_name, group_id)
             user.send_welcome()
         elif text == "/share":
             user.send_share()
