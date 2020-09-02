@@ -136,10 +136,11 @@ class User:
 """ % (lesson["name"], lesson["beginLesson"].strftime("%H:%M"), lesson["endLesson"].strftime("%H:%M"), \
                 lesson["place"], lesson["lecturer"] if "!" not in lesson["lecturer"] else "<i>Нет информации</i>", lesson["type"])
         self.edit_message("""🔰 <b>Расписание на %s, %s</b>
+<i>Информация обновлена %s</i>
 
 %s🟡 <b>Пара идет</b>
 🟢 <b>Пара закончилась</b>""" % (date_obj.strftime("%d.%m"), get_weekday_name(date_obj), \
-        lessons_message if lessons_message else "🌀 <b>В этот день нет занятий</b>\n\n" \
+        date_obj.strftime("%H:%M"), lessons_message if lessons_message else "🌀 <b>В этот день нет занятий</b>\n\n" \
         ), reply_markup=get_inline_keyboard([ \
             [ \
                 {"text": "◀️ %s, %s" % ((date_obj - datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj - datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=1)).timestamp())}, \
