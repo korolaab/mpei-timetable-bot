@@ -63,6 +63,7 @@ async def s_twebhook(request):
             return response.text("OK")
         if text == "/start":
             group = text.replace("/start", "").strip()
+            print(group)
             if group:
                 group_id, group_name = models.get_group_id(group)
                 if group_id: user.set_group(group_name, group_id)
