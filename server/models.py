@@ -108,12 +108,14 @@ class User:
         except apihelper.ApiException as e: print("Error: [%s] (caused by delete_message)" % e)
 
     def edit_message(self, text, *args, **kwargs):
-        try: bot.edit_message_text(chat_id=self.tid, message_id=self.message_id, \
+        try: return bot.edit_message_text(chat_id=self.tid, message_id=self.message_id, \
             text=text, parse_mode="html", *args, **kwargs)
-        except apihelper.ApiException as e: print("Error: [%s] (caused by edit_message)" % e)
+        except apihelper.ApiException as e:
+            print("Error: [%s] (caused by edit_message)" % e)
+            return False
 
-    def answer_callback(self, cd_id):
-        try: bot.answer_callback_query(callback_query_id=cd_id, text="Пункт выбран", show_alert=False)
+    def answer_callback(self, cd_id, text=None):
+        try: bot.answer_callback_query(callback_query_id=cd_id, text=(text or "Пункт выбран"), show_alert=False)
         except apihelper.ApiException as e: print("Error: [%s] (caused by answer_callback)" % e)
 
     def send_timetable(self, date_obj):
@@ -135,7 +137,7 @@ class User:
 
 """ % (lesson["name"], lesson["beginLesson"].strftime("%H:%M"), lesson["endLesson"].strftime("%H:%M"), \
                 lesson["place"], lesson["lecturer"] if "!" not in lesson["lecturer"] else "<i>Нет информации</i>", lesson["type"])
-        self.edit_message("""🔰 <b>Расписание на %s, %s</b>
+        return self.edit_message("""🔰 <b>Расписание на %s, %s</b>
 <i>Информация обновлена %s</i>
 
 %s🟡 <b>Пара идет</b>
