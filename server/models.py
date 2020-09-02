@@ -178,7 +178,7 @@ class User:
             lesson_obj["type"] = lesson["kindOfWork"]
             lesson_obj["place"] = "%s (%s)" % (lesson["auditorium"], lesson["building"] if "building" in lesson else "нет информации")
             lesson_obj["lecturer"] = lesson["lecturer"]
-            lesson_obj["beginLesson"] = date_obj.replace(hour=int(lesson_obj["beginLesson"].split(":")[0]), minute=int(lesson_obj["beginLesson"].split(":")[1]))
-            lesson_obj["endLesson"] = date_obj.replace(hour=int(lesson_obj["endLesson"].split(":")[0]), minute=int(lesson_obj["endLesson"].split(":")[1]))
+            lesson_obj["beginLesson"] = date_obj.replace(hour=int(lesson["beginLesson"].split(":")[0]), minute=int(lesson["beginLesson"].split(":")[1]))
+            lesson_obj["endLesson"] = date_obj.replace(hour=int(lesson["endLesson"].split(":")[0]), minute=int(lesson["endLesson"].split(":")[1]))
             lessons.append(lesson_obj)
         return lessons
