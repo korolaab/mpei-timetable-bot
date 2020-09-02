@@ -51,6 +51,7 @@ async def s_twebhook(request):
 Кто сделал этого бота? <a href="https://gurov.co/">gurov.co</a>
 
 По всем вопросам обращайтесь к @psylopunk""", \
+                disable_web_page_preview=None, \
                 reply_markup=models.get_inline_keyboard([ \
                 [{"text": "Написать администратору", "url": "https://t.me/psylopunk"}],
                 [{"text": "На главную 🔙", "callback_data": "home"}]
