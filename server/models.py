@@ -9,7 +9,7 @@ import config
 import qrcode
 
 bot = TeleBot(config.TELEGRAM_BOT_KEY)
-db = pymongo.MongoClient("mongodb", 27017).mpeitt
+db = pymongo.MongoClient(config.MONGO_URI).mpeitt
 lock = threading.Lock()
 
 def get_default_inline_keyboard(user):
