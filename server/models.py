@@ -115,7 +115,7 @@ class User:
             return False
 
     def answer_callback(self, cd_id, text=None):
-        try: bot.answer_callback_query(callback_query_id=cd_id, text=(text or "Пункт выбран"), show_alert=False)
+        try: bot.answer_callback_query(callback_query_id=cd_id, text=(text or "Выполнено"), show_alert=False)
         except apihelper.ApiException as e: print("Error: [%s] (caused by answer_callback)" % e)
 
     def send_timetable(self, date_obj):

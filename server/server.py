@@ -18,7 +18,7 @@ async def s_twebhook(request):
     if "callback_query" in request.json:
         data = request.json["callback_query"]
         user = memory.get_user_by_chat(data["message"]["chat"])
-        # user.answer_callback(data["id"])
+        user.answer_callback(data["id"])
         callback_data = data["data"]
         if callback_data == "timetable_mem":
             if not user.group_id:
@@ -27,8 +27,7 @@ async def s_twebhook(request):
             user.send_timetable(datetime.datetime.now())
         elif "timetable_mem_" in callback_data:
             tstamp = int(callback_data.replace("timetable_mem_", ""))
-            u = user.send_timetable(datetime.datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))
-            if u == False: user.answer_callback(data["id"], text="Обновлено")
+            user.send_timetable(datetime.datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))
         elif callback_data == "timetable_search":
             user.action = "timetable_search_input"
             m_id = user.send_message("👉 Введите название Вашей группы\n\n<i>Пример:</i> ИЭ-46-20", reply_markup=models.get_keyboard([["Отмена"]])).message_id
