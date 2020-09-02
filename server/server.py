@@ -14,7 +14,7 @@ async def s_index(request):
 @app.route("/t_webhook", methods=["GET", "POST"])
 async def s_twebhook(request):
     data = request.json
-    print(data)
+    # print(data)
     if "callback_query" in request.json:
         data = request.json["callback_query"]
         user = memory.get_user_by_chat(data["message"]["chat"])
