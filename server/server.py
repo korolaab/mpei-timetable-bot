@@ -30,7 +30,7 @@ async def s_twebhook(request):
             user.send_timetable(datetime.datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))
         elif callback_data == "timetable_search":
             user.action = "timetable_search_input"
-            m_id = user.send_message("👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
+            m_id = user.send_message("👉 Введите название Вашей группы\n\n<i>Пример:</i> ИЭ-46-20", reply_markup=models.get_keyboard([["Отмена"]])).message_id
             user.data = {"msg_ids": [m_id]}
         elif callback_data == "share":
             user.send_share()
