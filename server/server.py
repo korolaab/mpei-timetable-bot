@@ -32,7 +32,7 @@ async def s_twebhook(request):
             m_id = user.send_message("👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]])).message_id
             user.data = {"msg_ids": [m_id]}
         elif callback_data == "share":
-
+            user.send_share()
         elif callback_data == "feedback":
             user.edit_message("""❓ <b>Обратная связь</b>
 
@@ -63,6 +63,8 @@ async def s_twebhook(request):
             return response.text("OK")
         if text == "/start":
             user.send_welcome()
+        elif text == "/share":
+            user.send_share()
         else:
             user.send_message("⚠️ <b>Воспользуйтесь кнопками на сообщении выше или нажмите на</b> /start")
         return response.text("OK")
