@@ -129,7 +129,9 @@ class User:
       <i>%s - %s</i>
       📍 %s
       👨‍🏫 %s
-      <code>%s</code>""" % (lesson["name"], lesson["beginLesson"].strftime("%H:%M"), lesson["endLesson"].strftime("%H:%M"), \
+      <code>%s</code>
+
+""" % (lesson["name"], lesson["beginLesson"].strftime("%H:%M"), lesson["endLesson"].strftime("%H:%M"), \
                 lesson["place"], lesson["lecturer"] if "!" not in lesson["lecturer"] else "<i>Нет информации</i>", lesson["type"])
         self.edit_message("""🔰 <b>Расписание на %s, %s</b>
 
