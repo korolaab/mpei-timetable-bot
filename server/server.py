@@ -64,9 +64,12 @@ async def s_twebhook(request):
             return response.text("OK")
         if "/start" in text:
             group = text.replace("/start", "").strip()
-            if group:
-                group_id, group_name = models.get_group_id(bytearray.fromhex(group).decode("utf8"))
-                if group_id: user.set_group(group_name, group_id)
+            try:
+                if group:
+                    group_id, group_name = models.get_group_id(bytearray.fromhex(group).decode("utf8"))
+                    if group_id: user.set_group(group_name, group_id)
+            except Exception as e:
+                print("Error [%s] (caused by /start)" % e)
             user.send_welcome()
         elif text == "/share":
             user.send_share()
