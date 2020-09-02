@@ -65,6 +65,7 @@ async def s_twebhook(request):
             user.send_welcome()
         elif text == "/share":
             user.send_share()
+            user.delete_message(data["message_id"])
         else:
             user.send_message("⚠️ <b>Воспользуйтесь кнопками на сообщении выше или нажмите на</b> /start")
         return response.text("OK")

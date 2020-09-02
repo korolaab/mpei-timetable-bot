@@ -162,7 +162,7 @@ class User:
 
 Покажи своему другу QR-код сообщением ниже или перешли ему это сообщение с ссылкой
 
-%s""" % ("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group) if self.group else "")), disable_web_page_preview=None, reply_markup=get_inline_keyboard([[{"text": "На главную 🔙", "callback_data": "home"}]]))
+%s""" % ("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group) if self.group else "")), disable_web_page_preview=True, reply_markup=get_inline_keyboard([[{"text": "На главную 🔙", "callback_data": "home"}]]))
         with open("/data/qr_codes/%s.png" % qr_file, "rb") as file: self.send_photo(file)
 
     def send_welcome(self, message=None):
