@@ -4,7 +4,9 @@ import datetime
 import requests
 import pymongo
 import threading
+import uuid
 import config
+import qrcode
 
 bot = TeleBot(config.TELEGRAM_BOT_KEY)
 db = pymongo.MongoClient("mongodb", 27017).mpeitt
@@ -137,7 +139,7 @@ class User:
 
 %s🟡 <b>Пара идет</b>
 🟢 <b>Пара закончилась</b>""" % (date_obj.strftime("%d.%m"), get_weekday_name(date_obj), \
-        lessons_message if lessons_message else "🌀 <b>В этот день нет занятий</b>" \
+        lessons_message if lessons_message else "🌀 <b>В этот день нет занятий</b>\n\n" \
         ), reply_markup=get_inline_keyboard([ \
             [ \
                 {"text": "◀️ %s, %s" % ((date_obj - datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj - datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=1)).timestamp())}, \
@@ -151,6 +153,17 @@ class User:
             [{"text": "На главную 🔙", "callback_data": "home"}] \
         ], row_width=4))
 
+    def send_share(self):
+        qr = qrcode.QRCode(version=4, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10,border=1)
+        qr.add_data("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group) if self.group else ""))
+        qr_file = "%s" % uuid.uuid4()
+        qr.make_image(fill_color="black", back_color="white").save("/data/qr_codes/%s.png" % qr_file)
+        self.edit_message("""💎 <b>Поделиться с друзьями</b>
+
+Покажи своему другу QR-код сообщением ниже или перешли ему это сообщение с ссылкой
+
+%s""" % ("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group) if self.group else "")), disable_web_page_preview=None, reply_markup=get_inline_keyboard([[{"text": "На главную 🔙", "callback_data": "home"}]]))
+        with open("/data/qr_codes/%s.png" % qr_file, "rb") as file: self.send_photo(file)
 
     def send_welcome(self, message=None):
         self.clear_action()
