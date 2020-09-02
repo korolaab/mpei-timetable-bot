@@ -14,6 +14,6 @@ services:
   mongodb:
     image: mongo:3.3
     volumes:
-      - /data/mdb:/data/mdb:rw
+      - /data/mdb:/data/db:rw
     ports:
       - "27082:27017"
