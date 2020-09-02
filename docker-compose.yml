@@ -17,4 +17,4 @@ services:
       - /data/mdb:/data/mdb:rw
     ports:
       - "27082:27017"
-    command: mongod --noauth --dbpath /data/mdb
+    command: mongod --auth --dbpath /data/mdb
