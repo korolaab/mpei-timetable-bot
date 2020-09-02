@@ -143,7 +143,7 @@ class User:
         ), reply_markup=get_inline_keyboard([ \
             [ \
                 {"text": "◀️ %s, %s" % ((date_obj - datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj - datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=1)).timestamp())}, \
-                {"text": "Обновить", "callback_data": "timetable_mem_%s" % int(date_obj.timestamp())}
+                {"text": "Обновить", "callback_data": "timetable_mem_%s" % int(date_obj.timestamp())},
                 {"text": "%s, %s ▶️" % ((date_obj + datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj + datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj + datetime.timedelta(days=1)).timestamp())} \
             ], \
             [ \
