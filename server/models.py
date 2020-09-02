@@ -143,6 +143,7 @@ class User:
         ), reply_markup=get_inline_keyboard([ \
             [ \
                 {"text": "◀️ %s, %s" % ((date_obj - datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj - datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj - datetime.timedelta(days=1)).timestamp())}, \
+                {"text": "Обновить", "callback_data": "timetable_mem_%s" % int(date_obj.timestamp())}
                 {"text": "%s, %s ▶️" % ((date_obj + datetime.timedelta(days=1)).strftime("%d.%m"), get_weekday_name(date_obj + datetime.timedelta(days=1))), "callback_data": "timetable_mem_%s" % int((date_obj + datetime.timedelta(days=1)).timestamp())} \
             ], \
             [ \
@@ -151,7 +152,7 @@ class User:
                 {"text": "%s, %s ⏩" % ((date_obj + datetime.timedelta(days=7)).strftime("%d.%m"), get_weekday_name(date_obj + datetime.timedelta(days=7))), "callback_data": "timetable_mem_%s" % int((date_obj + datetime.timedelta(days=7)).timestamp())}
             ], \
             [{"text": "На главную 🔙", "callback_data": "home"}] \
-        ], row_width=4))
+        ], row_width=3))
 
     def send_share(self):
         qr = qrcode.QRCode(version=4, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10,border=1)
