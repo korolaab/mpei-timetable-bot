@@ -61,7 +61,7 @@ async def s_twebhook(request):
                 user.set_group(group_name, group_id)
                 user.send_welcome(message="✅ <b>Группа сохранена</b>")
             return response.text("OK")
-        if text == "/start":
+        if "/start" in text:
             group = text.replace("/start", "").strip()
             print(group)
             if group:
