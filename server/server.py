@@ -48,7 +48,8 @@ async def s_twebhook(request):
             if "lmid" in user.data: user.delete_message(user.data["lmid"])
             building_name = bytearray.fromhex(callback_data.replace("building_location_", "").strip()).decode("utf8")
             coordinates = config.BUILDINGS[building_name]
-            user.send_location(coordinates[0], coordinates[1])
+            r = user.send_location(coordinates[0], coordinates[1])
+            if r: user.data["lmid"] = r.message_id
         elif callback_data == "share":
             user.send_share()
         elif callback_data == "feedback":
