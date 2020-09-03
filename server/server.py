@@ -39,9 +39,9 @@ async def s_twebhook(request):
 
 Кто сделал этого бота? <a href="https://gurov.co/">gurov.co</a>
 
-Донат:
-QIWI +79255549461
-BITCOIN (сообщением ниже, для удобства копирования)
+<i>Донат:</i>
+<b>QIWI</b> +79255549461
+<b>BITCOIN</b> (сообщением ниже, для удобства копирования)
 
 По всем вопросам обращайтесь к @psylopunk""", \
                 disable_web_page_preview=None, \
