@@ -31,7 +31,24 @@ async def s_twebhook(request):
         elif callback_data == "timetable_search":
             user.action = "timetable_search_input"
             m_id = user.send_message("👉 Введите название Вашей группы\n\n<i>Пример:</i> ИЭ-46-20", reply_markup=models.get_keyboard([["Отмена"]])).message_id
-            user.data = {"msg_ids": [m_id]}
+        elif callback_data == "building_locations":
+            user.edit_message("""📍 <b>Расположение корпусов</b>
+
+<i>Это тестовая функция, если Вы заметили не точность данных, напишите в обратную связь</i>
+<i>Позже на этом месте будет фотография карты корпусов, но пока ее нет в достаточно хорошем оформлении. Если у Вас есть желание помочь с этой фотографией, напишите в обратную связь<i>
+
+👉 Выберите букву корпуса""", \
+                reply_markup=models.get_inline_keyboard([ \
+                    [{"text": n, "callback_data": "building_location_%s" % n.encode("utf8").hex()} for n in "АБВГДЕ"], \
+                    [{"text": n, "callback_data": "building_location_%s" % n.encode("utf8").hex()} for n in "ЖЗИКЛМ"], \
+                    [{"text": n, "callback_data": "building_location_%s" % n.encode("utf8").hex()} for n in "НРСТФХ"], \
+                    [{"text": "На главную 🔙", "callback_data": "home"}]
+            ]))
+        elif "building_location_" in callback_data:
+            if "lmid" in user.data: user.delete_message(user.data["lmid"])
+            building_name = bytearray.fromhex(callback_data.replace("building_location_", "").strip()).decode("utf8")
+            coordinates = config.BUILDINGS[building_name]
+            user.send_location(coordinates[0], coordinates[1])
         elif callback_data == "share":
             user.send_share()
         elif callback_data == "feedback":

@@ -16,6 +16,7 @@ def get_default_inline_keyboard(user):
     return get_inline_keyboard([ \
         [{"text": "Мое расписание", "callback_data": "timetable_mem"}] if user.group_id else [], \
         [{"text": "Найти группу" if not user.group_id else "Изменить группу", "callback_data": "timetable_search"}], \
+        [{"text": "Расположение корпусов", "callback_data": "building_locations"}],
         [{"text": "Поделиться с друзьями", "callback_data": "share"}, {"text": "Обратная связь", "callback_data": "feedback"}] \
     ], row_width=2)
 
@@ -102,6 +103,13 @@ class User:
             if save: self.save_message(r.message_id)
             return r
         except apihelper.ApiException as e: print("Error: [%s] (caused by send_photo)" % e); return False
+
+    def send_location(self, latitude, longitude, save=True):
+        try:
+            r = bot.send_location(self.tid, latitude, longitude)
+            if save: self.save_message(r.message_id)
+            return r
+        except apihelper.ApiException as e: print("Error: [%s] (caused by send_location)" % e); return False
 
     def delete_message(self, message_id):
         try: bot.delete_message(self.tid, message_id)
