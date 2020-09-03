@@ -40,11 +40,9 @@ async def s_twebhook(request):
 
 👉 Выберите букву корпуса""", \
                 reply_markup=models.get_inline_keyboard([ \
-                    [{"text": n, "callback_data": "building_location_%s" % n.encode("utf8").hex()} for n in "АБВГДЕ"], \
-                    [{"text": n, "callback_data": "building_location_%s" % n.encode("utf8").hex()} for n in "ЖЗИКЛМ"], \
-                    [{"text": n, "callback_data": "building_location_%s" % n.encode("utf8").hex()} for n in "НРСТФХ"], \
+                    [{"text": n, "callback_data": "building_location_%s" % n.encode("utf8").hex()} for n in "АБВГДЕЖЗИКЛМНРСТФХ"], \
                     [{"text": "На главную 🔙", "callback_data": "home"}]
-            ]))
+            ], row_width=3))
         elif "building_location_" in callback_data:
             if "lmid" in user.data: user.delete_message(user.data["lmid"])
             building_name = bytearray.fromhex(callback_data.replace("building_location_", "").strip()).decode("utf8")
