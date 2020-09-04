@@ -99,6 +99,7 @@ async def s_twebhook(request):
             if text == "Отмена":
                 if user.action == "toggle_lnotification": user.send_settings()
                 else: user.send_welcome()
+                return response.text("OK")
             if user.action == "timetable_search_input":
                 group_id, group_name = models.get_group_id(text)
                 if not group_id:
