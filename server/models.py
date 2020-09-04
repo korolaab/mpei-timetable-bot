@@ -153,7 +153,6 @@ class User:
         except apihelper.ApiException as e: print("Error: [%s] (caused by answer_callback)" % e)
 
     def send_settings(self):
-        self.clear_action()
         if "lesson_notification" not in self.settings:
             self.settings["lesson_notification"] = {"enabled": False}
             self.upload_settings()
