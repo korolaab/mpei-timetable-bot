@@ -60,6 +60,7 @@ async def s_twebhook(request):
             if user.settings["lesson_notification"]["enabled"]:
                 user.settings["lesson_notification"] = {"enabled": False}
                 user.upload_settings()
+                user.send_settings()
             else:
                 user.action = "toggle_lnotification"
                 user.send_message("👉 Введите количество минут (только цифры)\n\n<i>Пример:</i> 15\n\n<i>Уведомление о парах будет приходить за указанное количество минут до начала</i>", reply_markup=models.get_keyboard([["Отмена"]]))
@@ -93,7 +94,9 @@ async def s_twebhook(request):
             print("Error: [%s] (caused by get text by message)" % e)
             return response.text("OK")
         if user.action:
-            if text == "Отмена": user.send_welcome()
+            if text == "Отмена":
+                if user.action == "toggle_lnotification": user.send_settings()
+                else: user.send_welcome()
             if user.action == "timetable_search_input":
                 group_id, group_name = models.get_group_id(text)
                 if not group_id:
