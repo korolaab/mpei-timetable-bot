@@ -80,12 +80,20 @@ class User:
         self.group_id = user_object["group_id"] if "group_id" in user_object else None
         self.message_id = user_object["message_id"] if "message_id" in user_object else None
         self.history_messages_id = user_object["history_messages_id"] if "history_messages_id" in user_object else []
+        self.last_update_id = 0
+
         if "settings" in user_object: self.settings = user_object["settings"]
         else:
             self.settings = {}
             self.upload_settings()
 
         self.clear_action()
+
+    def check_update_id(self, uid):
+        if uid > self.last_update_id:
+            self.last_update_id = uid
+            return True
+        else: return False
 
     def clear_action(self):
         self.action = None
@@ -145,6 +153,7 @@ class User:
         except apihelper.ApiException as e: print("Error: [%s] (caused by answer_callback)" % e)
 
     def send_settings(self):
+        self.clear_action()
         if "lesson_notification" not in self.settings:
             self.settings["lesson_notification"] = {"enabled": False}
             self.upload_settings()

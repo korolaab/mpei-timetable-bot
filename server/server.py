@@ -11,13 +11,14 @@ app = Sanic(__name__)
 async def s_index(request):
     return response.text("OK")
 
-@app.route("/t_webhook", methods=["GET", "POST"])
+@app.route("/t_webhook", methods=["POST"])
 async def s_twebhook(request):
     data = request.json
     # print(data)
     if "callback_query" in request.json:
         data = request.json["callback_query"]
         user = memory.get_user_by_chat(data["message"]["chat"])
+        if not user.check_update_id(request.json["update_id"]): return response.text("OK")
         user.answer_callback(data["id"])
         callback_data = data["data"]
         if callback_data == "timetable_mem":
@@ -87,6 +88,7 @@ async def s_twebhook(request):
     elif "message" in data:
         data = data["message"]
         user = memory.get_user_by_chat(data["chat"])
+        if not user.check_update_id(request.json["update_id"]): return response.text("OK")
         user.save_message(data["message_id"])
         try: text = data["text"]
         except Exception as e:
