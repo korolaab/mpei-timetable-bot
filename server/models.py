@@ -7,6 +7,7 @@ import threading
 import uuid
 import config
 import qrcode
+import time
 
 bot = TeleBot(config.TELEGRAM_BOT_KEY)
 db = pymongo.MongoClient(config.MONGO_URI).mpeitt
@@ -17,6 +18,7 @@ def get_default_inline_keyboard(user):
         [{"text": "Мое расписание", "callback_data": "timetable_mem"}] if user.group_id else [], \
         [{"text": "Найти группу" if not user.group_id else "Изменить группу", "callback_data": "timetable_search"}], \
         [{"text": "Расположение корпусов", "callback_data": "building_locations"}],
+        [{"text": "Настройки", "callback_data": "settings"}],
         [{"text": "Поделиться с друзьями", "callback_data": "share"}, {"text": "Обратная связь", "callback_data": "feedback"}] \
     ], row_width=2)
 
@@ -59,6 +61,16 @@ class Memory:
         else: user = self.users[chat["id"]]
         return user
 
+    def __polling_notifier__(self):
+        while True:
+            pass
+            time.sleep(10)
+
+    def polling_notifier(self):
+        self.nthread = threading.Thread(target=self.__polling_notifier__, args=[])
+        self.nthread.daemon = True
+        self.nthread.start()
+
 class User:
     def __init__(self, tid):
         user_object = db.users.find({"tid": tid})[0]
@@ -68,6 +80,10 @@ class User:
         self.group_id = user_object["group_id"] if "group_id" in user_object else None
         self.message_id = user_object["message_id"] if "message_id" in user_object else None
         self.history_messages_id = user_object["history_messages_id"] if "history_messages_id" in user_object else []
+        if "settings" in user_object: self.settings = user_object["settings"]
+        else:
+            self.settings = {}
+            self.upload_settings()
 
         self.clear_action()
 
@@ -84,6 +100,8 @@ class User:
     def save_message(self, message_id):
         self.history_messages_id.append(message_id)
         db.users.update_one({"_id": self.db_id}, {"$set": {"history_messages_id": self.history_messages_id}})
+
+    def upload_settings(self): db.users.update_one({"_id": self.db_id}, {"$set": {"settings": self.settings}})
 
     def set_group(self, group, group_id):
         self.group = group.upper()
@@ -125,6 +143,21 @@ class User:
     def answer_callback(self, cd_id, text=None):
         try: bot.answer_callback_query(callback_query_id=cd_id, text=(text or "Выполнено"), show_alert=False)
         except apihelper.ApiException as e: print("Error: [%s] (caused by answer_callback)" % e)
+
+    def send_settings(self):
+        if "lesson_notification" not in self.settings:
+            self.settings["lesson_notification"] = {"enabled": False}
+            self.upload_settings()
+        self.clear_messages()
+        self.edit_message("""⚙️ <b>Настройки</b>
+
+Уведомления о парах
+<i>Вы можете установить время, за сколько перед началом пары, Вам нужно будет прислать сообщение</i>
+
+⚠️ <b>Уведомления о парах еще не доступны, Вы можете включить эту настройку заранее</b>""", reply_markup=models.get_inline_keyboard([ \
+            [{"text": "%s Уведомления об парах" % ("🟢" if self.settings["lesson_notification"]["enabled"] else "🔴"), "callback_data": "setting_toggle_lnotification"}], \
+            [{"text": "На главную 🔙", "callback_data": "home"}]
+        ]))
 
     def send_timetable(self, date_obj):
         day = self.get_timetable_json(date_obj)

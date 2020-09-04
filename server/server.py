@@ -30,7 +30,7 @@ async def s_twebhook(request):
             user.send_timetable(datetime.datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))
         elif callback_data == "timetable_search":
             user.action = "timetable_search_input"
-            m_id = user.send_message("👉 Введите название Вашей группы\n\n<i>Пример:</i> ИЭ-46-20", reply_markup=models.get_keyboard([["Отмена"]])).message_id
+            user.send_message("👉 Введите название Вашей группы\n\n<i>Пример:</i> ИЭ-46-20", reply_markup=models.get_keyboard([["Отмена"]]))
         elif callback_data == "building_locations":
             user.edit_message("""📍 <b>Расположение корпусов</b>
 
@@ -51,6 +51,18 @@ async def s_twebhook(request):
             coordinates = config.BUILDINGS[building_name]
             r = user.send_location(coordinates[0], coordinates[1])
             if r: user.data["lmid"] = r.message_id
+        elif callback_data == "settings":
+            user.send_settings()
+        elif callback_data == "setting_toggle_lnotification":
+            if "lesson_notification" not in user.settings:
+                user.settings["lesson_notification"] = {"enabled": False}
+                user.upload_settings()
+            if user.settings["lesson_notification"]["enabled"]:
+                user.settings["lesson_notification"] = {"enabled": False}
+                user.upload_settings()
+            else:
+                user.action = "toggle_lnotification"
+                user.send_message("👉 Введите количество минут (только цифры)\n\n<i>Пример:</i> 15\n\n<i>Уведомление о парах будет приходить за указанное количество минут до начала</i>", reply_markup=models.get_keyboard([["Отмена"]]))
         elif callback_data == "share":
             user.send_share()
         elif callback_data == "feedback":
@@ -89,6 +101,14 @@ async def s_twebhook(request):
                     return response.text("OK")
                 user.set_group(group_name, group_id)
                 user.send_welcome(message="✅ <b>Группа сохранена</b>")
+            elif user.action == "toggle_lnotification":
+                if not text.isdigit():
+                    user.send_message("⚠️ <b>Вы ввели текст</b>\n\n👉 Введите количество минут", reply_markup=models.get_keyboard([["Отмена"]]))
+                    return response.text("OK")
+                user.settings["lesson_notification"] = {"enabled": True, "minutes": int(text)}
+                user.upload_settings()
+                user.send_settings()
+            else: user.send_welcome()
             return response.text("OK")
         if "/start" in text:
             group = text.replace("/start", "").strip()
