@@ -73,7 +73,11 @@ async def s_twebhook(request):
         data = data["message"]
         user = memory.get_user_by_chat(data["chat"])
         user.save_message(data["message_id"])
-        text = data["text"]
+        try: text = data["text"]
+        except Exception as e:
+            print(data)
+            print("Error: [%s] (caused by get text by message)" % e)
+            return response.text("OK")
         if user.action:
             if text == "Отмена": user.send_welcome()
             if user.action == "timetable_search_input":
