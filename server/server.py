@@ -97,8 +97,7 @@ async def s_twebhook(request):
             return response.text("OK")
         if user.action:
             if text == "Отмена":
-                if user.action == "toggle_lnotification":
-                    user.settings()
+                if user.action == "toggle_lnotification": user.send_settings()
                 else: user.send_welcome()
                 user.clear_action()
                 return response.text("OK")
