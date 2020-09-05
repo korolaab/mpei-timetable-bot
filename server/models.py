@@ -148,9 +148,8 @@ class User:
             text=text, parse_mode="html", *args, **kwargs)
             if m:
                 self.message_id = m.message_id
-                db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
-                return m
-            return False
+                db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}}
+            return m
         except apihelper.ApiException as e:
             print("Error: [%s] (caused by edit_message)" % e)
             return False
