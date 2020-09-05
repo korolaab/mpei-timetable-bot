@@ -144,7 +144,8 @@ class User:
     def edit_message(self, text, *args, **kwargs):
         try:
             if self.message_id: self.delete_message(self.message_id)
-            m = self.send_message(self.tid, text=text, *args, **kwargs)
+            m = self.send_message(self.tid, \
+            text=text, parse_mode="html", *args, **kwargs)
             if m:
                 self.message_id = m.message_id
                 db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
