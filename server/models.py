@@ -142,8 +142,15 @@ class User:
         except apihelper.ApiException as e: print("Error: [%s] (caused by delete_message)" % e)
 
     def edit_message(self, text, *args, **kwargs):
-        try: return bot.edit_message_text(chat_id=self.tid, message_id=self.message_id, \
-            text=text, parse_mode="html", *args, **kwargs)
+        try:
+            self.delete_message(self.message_id)
+            r = self.send_message(text, save=False, *args, **kwargs)
+            if r:
+                self.message_id = r.message_id
+                db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": r.message_id}})
+            return r
+            # return bot.edit_message_text(chat_id=self.tid, message_id=self.message_id, \
+            # text=text, parse_mode="html", *args, **kwargs)
         except apihelper.ApiException as e:
             print("Error: [%s] (caused by edit_message)" % e)
             return False
