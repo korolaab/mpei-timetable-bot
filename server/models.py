@@ -16,9 +16,9 @@ lock = threading.Lock()
 def get_default_inline_keyboard(user):
     return get_inline_keyboard([ \
         [{"text": "Мое расписание", "callback_data": "timetable_mem"}] if user.group_id else [], \
-        [{"text": "Найти группу" if not user.group_id else "Изменить группу", "callback_data": "timetable_search"}], \
         [{"text": "Расположение корпусов", "callback_data": "building_locations"}],
-        [{"text": "Настройки", "callback_data": "settings"}],
+        [{"text": "Звонки", "callback_data": "bells_sticker"}],
+        [{"text": "Найти группу" if not user.group_id else "Изменить группу", "callback_data": "timetable_search"}, {"text": "Настройки", "callback_data": "settings"} if user.group_id else {}],
         [{"text": "Поделиться с друзьями", "callback_data": "share"}, {"text": "Обратная связь", "callback_data": "feedback"}] \
     ], row_width=2)
 
@@ -122,6 +122,14 @@ class User:
             if save: self.save_message(r.message_id)
             return r
         except apihelper.ApiException as e: print("Error: [%s] (caused by send_message)" % e); return False
+
+    def send_sticker(self, sticker_id, save=True, clsm=True, *args, **kwargs):
+        if clsm: self.clear_messages()
+        try:
+            r = bot.send_sticker(self.tid, sticker_id, *args, **kwargs)
+            if save: self.save_message(r.message_id)
+            return r
+        except apihelper.ApiException as e: print("Error: [%s] (caused by send_sticker)" % e); return False
 
     def send_photo(self, photo, save=True):
         try:
