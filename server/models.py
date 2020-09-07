@@ -150,6 +150,7 @@ class User:
         except apihelper.ApiException as e: print("Error: [%s] (caused by delete_message)" % e)
 
     def edit_message(self, text, *args, **kwargs):
+        self.clear_messages()
         try:
             self.delete_message(self.message_id)
             r = self.send_message(text, save=False, *args, **kwargs)
