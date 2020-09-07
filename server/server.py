@@ -53,7 +53,7 @@ async def s_twebhook(request):
             r = user.send_location(coordinates[0], coordinates[1])
             if r: user.data["lmid"] = r.message_id
         elif callback_data == "bells_sticker":
-            user.send_sticker("CAACAgIAAxkBAAITyF9WKTIxNtb99cfx3EYXlklzKNmwAAJgCgACkTexShtdIR69f0ujGwQ")
+            user.send_sticker("CAACAgIAAxkBAAIT8V9WLBPE8NxjsDzE_1e0DQNWIs1YAAJqCAACifCwSsu2IvEXtjwzGwQ")
         elif callback_data == "settings":
             user.send_settings()
         elif callback_data == "setting_toggle_lnotification":
