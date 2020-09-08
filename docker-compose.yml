@@ -19,4 +19,4 @@ services:
     restart: always
     ports:
       - "27082:27017"
-    command: mongod --auth --dbpath /data/mdb
+    command: mongod --noauth --dbpath /data/mdb
