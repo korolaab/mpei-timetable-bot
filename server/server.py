@@ -21,7 +21,7 @@ async def s_twebhook(request):
         if not user.check_update_id(request.json["update_id"]): return response.text("OK")
         user.answer_callback(data["id"])
         callback_data = data["data"]
-        print("Callback data: %s" % callback_data)
+        # print("Callback data: %s" % callback_data)
         if callback_data == "timetable_mem":
             if not user.group_id:
                 user.send_welcome("⚠️ <b>Нет сохраненной группы</b>\n\nℹ️ <i>Найдите свою группу с помощью кнопок ниже</i>")

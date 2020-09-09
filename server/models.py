@@ -59,7 +59,7 @@ class Memory:
             else: user = User(chat["id"])
             with lock: self.users[chat["id"]] = user
         else: user = self.users[chat["id"]]
-        print(user)
+        # print(user)
         return user
 
     def __polling_notifier__(self):
@@ -158,14 +158,14 @@ class User:
     def edit_message(self, text, *args, **kwargs):
         self.clear_messages()
         try:
-            self.delete_message(self.message_id)
-            r = self.send_message(text, save=False, *args, **kwargs)
-            if r:
-                self.message_id = r.message_id
-                db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": r.message_id}})
-            return r
-            # return bot.edit_message_text(chat_id=self.tid, message_id=self.message_id, \
-            # text=text, parse_mode="html", *args, **kwargs)
+            # self.delete_message(self.message_id)
+            # r = self.send_message(text, save=False, *args, **kwargs)
+            # if r:
+            #     self.message_id = r.message_id
+            #     db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": r.message_id}})
+            # return r
+            return bot.edit_message_text(chat_id=self.tid, message_id=self.message_id, \
+            text=text, parse_mode="html", *args, **kwargs)
         except apihelper.ApiException as e:
             print("Error: [%s] (caused by edit_message)" % e)
             return False
