@@ -59,6 +59,7 @@ class Memory:
             else: user = User(chat["id"])
             with lock: self.users[chat["id"]] = user
         else: user = self.users[chat["id"]]
+        print(user)
         return user
 
     def __polling_notifier__(self):
@@ -72,10 +73,15 @@ class Memory:
         self.nthread.start()
 
 class User:
+    def __str__(self): return "User(tid=%s, username=%s, first_name=%s, last_name=%s)" % (self.tid, self.username, self.first_name, self.last_name)
+
     def __init__(self, tid):
         user_object = db.users.find({"tid": tid})[0]
         self.db_id = user_object["_id"]
         self.tid = user_object["tid"]
+        self.username = user_object["username"] if "username" in user_object else None
+        self.first_name = user_object["first_name"] if "first_name" in user_object else None
+        self.last_name = user_object["last_name"] if "last_name" in user_object else None
         self.group = user_object["group"] if "group" in user_object else None
         self.group_id = user_object["group_id"] if "group_id" in user_object else None
         self.message_id = user_object["message_id"] if "message_id" in user_object else None

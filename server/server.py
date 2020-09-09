@@ -14,7 +14,6 @@ async def s_index(request):
 @app.route("/t_webhook", methods=["POST"])
 async def s_twebhook(request):
     data = request.json
-    print("Query: %s" % data)
     # print(data)
     if "callback_query" in request.json:
         data = request.json["callback_query"]
@@ -22,6 +21,7 @@ async def s_twebhook(request):
         if not user.check_update_id(request.json["update_id"]): return response.text("OK")
         user.answer_callback(data["id"])
         callback_data = data["data"]
+        print("Callback data: %s" % callback_data)
         if callback_data == "timetable_mem":
             if not user.group_id:
                 user.send_welcome("⚠️ <b>Нет сохраненной группы</b>\n\nℹ️ <i>Найдите свою группу с помощью кнопок ниже</i>")
