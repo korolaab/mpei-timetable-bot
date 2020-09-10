@@ -1,31 +1,25 @@
-from sanic import Sanic, response
 import config
 import datetime
+import asyncio
 import uuid
+import requests
 import models
 
 memory = models.Memory()
-app = Sanic(__name__)
 
-@app.route("/")
-async def s_index(request):
-    return response.text("OK")
-
-@app.route("/t_webhook", methods=["POST"])
-async def s_twebhook(request):
-    data = request.json
+async def handle_update(update):
+    data = update
     # print(data)
-    if "callback_query" in request.json:
-        data = request.json["callback_query"]
+    if "callback_query" in data:
+        data = data["callback_query"]
         user = memory.get_user_by_chat(data["message"]["chat"])
-        if not user.check_update_id(request.json["update_id"]): return response.text("OK")
         user.answer_callback(data["id"])
         callback_data = data["data"]
         # print("Callback data: %s" % callback_data)
         if callback_data == "timetable_mem":
             if not user.group_id:
                 user.send_welcome("⚠️ <b>Нет сохраненной группы</b>\n\nℹ️ <i>Найдите свою группу с помощью кнопок ниже</i>")
-                return response.text("OK")
+                return True
             user.send_timetable(datetime.datetime.now())
         elif "timetable_mem_" in callback_data:
             tstamp = int(callback_data.replace("timetable_mem_", ""))
@@ -87,37 +81,36 @@ async def s_twebhook(request):
             ]))
             user.send_message("<code>1QDXmdfA7jW3JDewoAvWB5hn66eXrp1aNw</code>")
         elif callback_data == "home": user.send_welcome()
-        return response.text("OK")
+        return True
     elif "message" in data:
         data = data["message"]
         user = memory.get_user_by_chat(data["chat"])
-        if not user.check_update_id(request.json["update_id"]): return response.text("OK")
         user.save_message(data["message_id"])
         try: text = data["text"]
         except Exception as e:
             print(data)
             print("Error: [%s] (caused by get text by message)" % e)
-            return response.text("OK")
+            return True
         if user.action:
             if text == "Отмена":
                 user.send_welcome()
-                return response.text("OK")
+                return True
             if user.action == "timetable_search_input":
                 group_id, group_name = models.get_group_id(text)
                 if not group_id:
                     user.send_message("⚠️ <b>Группа не найдена</b>\n\n👉 Введите название Вашей группы", reply_markup=models.get_keyboard([["Отмена"]]))
-                    return response.text("OK")
+                    return True
                 user.set_group(group_name, group_id)
                 user.send_welcome(message="✅ <b>Группа сохранена</b>")
             elif user.action == "toggle_lnotification":
                 if not text.isdigit():
                     user.send_message("⚠️ <b>Вы ввели текст</b>\n\n👉 Введите количество минут", reply_markup=models.get_keyboard([["Отмена"]]))
-                    return response.text("OK")
+                    return True
                 user.settings["lesson_notification"] = {"enabled": True, "minutes": int(text)}
                 user.upload_settings()
                 user.send_settings()
             else: user.send_welcome()
-            return response.text("OK")
+            return True
         if "/start" in text:
             group = text.replace("/start", "").strip()
             try:
@@ -132,8 +125,20 @@ async def s_twebhook(request):
             user.delete_message(data["message_id"])
         else:
             user.send_message("⚠️ <b>Воспользуйтесь кнопками на сообщении выше или нажмите на</b> /start")
-        return response.text("OK")
-    return response.text("OK")
+        return True
+    return True
+
+async def polling():
+    while True:
+        res = requests.get("https://api.telegram.org/bot%s/getUpdates?offset=%s&timeout=80" % (config.TELEGRAM_BOT_KEY, memory.last_update_id + 1), timeout=120).json()
+        if res["ok"]:
+            if res["result"]:
+                updates = res["result"]
+                with memory.lock: memory.set_last_update_id(updates[-1]["update_id"])
+                tasks = [asyncio.ensure_future(handle_update(update)) for update in updates]
+                await asyncio.wait(tasks)
+        else: print("getUpdates failure: %s" % res)
+        await asyncio.sleep(.001)
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8082)
+    mloop = asyncio.get_event_loop()

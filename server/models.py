@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from telebot import TeleBot, types, apihelper
 import datetime
 import requests
+import asyncio
 import pymongo
 import threading
 import uuid
@@ -11,7 +12,7 @@ import time
 
 bot = TeleBot(config.TELEGRAM_BOT_KEY)
 db = pymongo.MongoClient(config.MONGO_URI).mpeitt
-lock = threading.Lock()
+lock = asyncio.Lock()
 
 def get_default_inline_keyboard(user):
     return get_inline_keyboard([ \
@@ -44,7 +45,18 @@ def get_group_id(name):
 
 class Memory:
     def __init__(self):
+        self.lock = lock
         self.users = {}
+
+        db_res = db.memory.find({"key": "last_update_id"})
+        try: self.last_update_id = db_res[0]["value"]
+        except IndexError:
+            self.last_update_id = db_res[0]["value"]
+            db.memory.insert_one({"key": "last_update_id", "value": 0})
+
+    def set_last_update_id(self, update_id):
+        self.last_update_id = update_id
+        db.memory.update_one({"key": "last_update_id"}, {"$set": {"value": update_id}})
 
     def hard_update_user(self, user): return User(user.tid)
 
@@ -57,7 +69,7 @@ class Memory:
                 db.users.insert_one(user_object)
                 user = User(user_object["tid"])
             else: user = User(chat["id"])
-            with lock: self.users[chat["id"]] = user
+            with self.lock: self.users[chat["id"]] = user
         else: user = self.users[chat["id"]]
         # print(user)
         return user
