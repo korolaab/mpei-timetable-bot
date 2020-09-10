@@ -69,7 +69,7 @@ class Memory:
                 db.users.insert_one(user_object)
                 user = User(user_object["tid"])
             else: user = User(chat["id"])
-            with self.lock: self.users[chat["id"]] = user
+            async with self.lock: self.users[chat["id"]] = user
         else: user = self.users[chat["id"]]
         # print(user)
         return user
