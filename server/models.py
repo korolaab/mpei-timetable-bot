@@ -71,7 +71,7 @@ class Memory:
             else: user = User(chat["id"])
             self.users[chat["id"]] = user
         else: user = self.users[chat["id"]]
-        # print(user)
+        print("[%s] Query by %s" % (datetime.datetime.now().strftime("%H:%M:%S"), user))
         return user
 
     def __polling_notifier__(self):
