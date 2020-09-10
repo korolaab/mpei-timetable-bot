@@ -134,7 +134,7 @@ async def polling():
         if res["ok"]:
             if res["result"]:
                 updates = res["result"]
-                with memory.lock: memory.set_last_update_id(updates[-1]["update_id"])
+                async with memory.lock: memory.set_last_update_id(updates[-1]["update_id"])
                 tasks = [asyncio.ensure_future(handle_update(update)) for update in updates]
                 await asyncio.wait(tasks)
         else: print("getUpdates failure: %s" % res)
