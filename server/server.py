@@ -142,3 +142,5 @@ async def polling():
 
 if __name__ == '__main__':
     mloop = asyncio.get_event_loop()
+    mloop.run_until_complete(polling())
+    mloop.close()
