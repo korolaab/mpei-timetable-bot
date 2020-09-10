@@ -51,7 +51,7 @@ class Memory:
         db_res = db.memory.find({"key": "last_update_id"})
         try: self.last_update_id = db_res[0]["value"]
         except IndexError:
-            self.last_update_id = db_res[0]["value"]
+            self.last_update_id = 0
             db.memory.insert_one({"key": "last_update_id", "value": 0})
 
     def set_last_update_id(self, update_id):
