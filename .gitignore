@@ -2,3 +2,5 @@ dump.json
 server/config.py
 server/set_webhook.py
 *.pyc
+mass_send.py
+mids
