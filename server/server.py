@@ -67,13 +67,15 @@ async def handle_update(update):
         elif callback_data == "feedback":
             user.edit_message("""❓ <b>О боте</b>
 
+🎓 Нашим ботом пользуется </b>~%s % студентов</b>
+
 Кто сделал этого бота? <a href="https://gurov.co/">gurov.co</a>
 
 <i>Донат:</i>
 <b>QIWI</b> +79255549461
 <b>BITCOIN</b> (сообщением ниже, для удобства копирования)
 
-По всем вопросам обращайтесь к @psylopunk""", \
+По всем вопросам обращайтесь к @psylopunk""" % round(memory.db.users.count_documents({}) / 13000 * 100, 2), \
                 disable_web_page_preview=None, \
                 reply_markup=models.get_inline_keyboard([ \
                 [{"text": "Написать администратору", "url": "https://t.me/psylopunk"}],

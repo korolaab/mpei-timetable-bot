@@ -45,6 +45,7 @@ def get_group_id(name):
 
 class Memory:
     def __init__(self):
+        self.db = db
         self.lock = lock
         self.users = {}
 
