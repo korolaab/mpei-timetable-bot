@@ -86,6 +86,7 @@ class Memory:
         self.nthread.start()
 
 class User:
+    def log(self, text): print("[%s] %s" % (self.__str__(), text))
     def __str__(self): return "User(tid=%s, username=%s, first_name=%s, last_name=%s)" % (self.tid, self.username, self.first_name, self.last_name)
 
     def __init__(self, tid):

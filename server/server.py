@@ -65,6 +65,7 @@ async def handle_update(update):
         elif callback_data == "share":
             user.send_share()
         elif callback_data == "feedback":
+            user.log("Open feedback yee")
             user.edit_message("""❓ <b>О боте</b>
 
 🎓 Нашим ботом пользуется <b>~%s %% студентов</b>
