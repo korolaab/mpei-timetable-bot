@@ -68,7 +68,7 @@ async def handle_update(update):
             user.log("Open feedback yee")
             user.edit_message("""❓ <b>О боте</b>
 
-🎓 Нашим ботом пользуется <b>~%s%% студентов</b>
+🎓 Нашим ботом пользуется <b>%s студентов</b>
 
 Кто сделал этого бота? <a href="https://gurov.co/">gurov.co</a>
 
@@ -76,7 +76,7 @@ async def handle_update(update):
 <b>QIWI</b> +79255549461
 <b>BITCOIN</b> (сообщением ниже, для удобства копирования)
 
-По всем вопросам обращайтесь к @psylopunk""" % round(memory.db.users.count_documents({}) / 13000 * 100, 2), \
+По всем вопросам обращайтесь к @psylopunk""" % memory.db.users.count_documents({}), \
                 disable_web_page_preview=None, \
                 reply_markup=models.get_inline_keyboard([ \
                 [{"text": "Написать администратору", "url": "https://t.me/psylopunk"}],
