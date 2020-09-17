@@ -19,6 +19,7 @@ def get_default_inline_keyboard(user):
         [{"text": "Мое расписание", "callback_data": "timetable_mem"}] if user.group_id else [], \
         [{"text": "Расположение корпусов", "callback_data": "building_locations"}],
         [{"text": "Звонки", "callback_data": "bells_sticker"}],
+        [{"text": "Подписка", "callback_data": "test_pay"}]
         [{"text": "Найти группу" if not user.group_id else "Изменить группу", "callback_data": "timetable_search"}, {"text": "Настройки", "callback_data": "settings"} if user.group_id else {}],
         [{"text": "Поделиться с друзьями", "callback_data": "share"}, {"text": "О боте", "callback_data": "feedback"}] \
     ], row_width=2)

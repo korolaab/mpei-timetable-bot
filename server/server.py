@@ -49,6 +49,20 @@ async def handle_update(update):
             if r: user.data["lmid"] = r.message_id
         elif callback_data == "bells_sticker":
             user.send_sticker("CAACAgIAAxkBAAIT8V9WLBPE8NxjsDzE_1e0DQNWIs1YAAJqCAACifCwSsu2IvEXtjwzGwQ")
+        elif callback_data == "test_pay":
+            user.edit_message("""💳 <b>Приобретение подписки</b> <i>(не работает)</i>
+
+<b>Описание услуги:</b>
+После приобретения подписки на @mpei_timetable_bot Вы получите <i>удобный доступ к расписанию в любое время и уведомления о начале пар</i>
+
+Стоимость подписки: <b>39 рублей в месяц</b>
+
+<i>Позже здесь появится тестовый период</i>
+
+Для произведения оплаты нужно привязать свою карту через Яндекс.Кассу <i>с помощью кнопки ниже</i>""", reply_markup=models.get_inline_keyboard([ \
+                [{"text": "Оплатить", "url": "https://mpei.bitpole.org/"}], \
+                [{"text": "На главную 🔙", "callback_data": "home"}] \
+            ]))
         elif callback_data == "settings":
             user.send_settings()
         elif callback_data == "setting_toggle_lnotification":
