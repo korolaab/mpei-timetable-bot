@@ -84,7 +84,7 @@ class Memory:
             time.sleep(180)
 
     async def polling(self):
-        loop = async.get_event_loop()
+        loop = asyncio.get_event_loop()
         loop.create_task(self.__polling_notifier__())
 
 class User:
