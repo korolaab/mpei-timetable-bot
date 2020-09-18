@@ -45,6 +45,8 @@ def get_group_id(name):
     else: return False, False
 
 class Memory:
+    def log(self, text): print("[Memory] %s" % text)
+
     def __init__(self):
         self.db = db
         self.loop = asyncio.get_event_loop()
@@ -79,12 +81,21 @@ class Memory:
 
     async def __polling_notifier__(self):
         while True:
-            print("Polling Notifier work")
+            self.log("Polling Notifier work")
             # group_ids = {user["group_id"] for user in self.db.users.find({}) if "group_id" in user}
             # for
-            time.sleep(180)
+            await asyncio.sleep(180)
 
-    def polling(self): self.loop.create_task(self.__polling_notifier__())
+    async def __autoclear_memory__(self):
+        self.log("AutoClear started")
+        while True:
+            with self.lock: self.users = {}
+            self.log("Active users was cleared")
+            await asyncio.sleep(5)
+
+    def polling(self):
+        self.loop.create_task(self.__polling_notifier__())
+        self.loop.create_task(self.__autoclear_memory__())
 
 class User:
     def log(self, text): print("[%s] %s" % (self.__str__(), text))
