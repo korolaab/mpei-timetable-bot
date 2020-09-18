@@ -112,6 +112,8 @@ class User:
         self.history_messages_id = user_object["history_messages_id"] if "history_messages_id" in user_object else []
         self.last_update_id = 0
 
+        db.users.update_one({"_id": self.db_id}, {"$set": {"last_use": time.time()}})
+
         if "settings" in user_object: self.settings = user_object["settings"]
         else:
             self.settings = {}
