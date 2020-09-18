@@ -158,7 +158,5 @@ async def polling():
         await asyncio.sleep(.001)
 
 if __name__ == '__main__':
-    memory.loop.create_task(polling())
-    memory.loop.run_forever()
-    while True: time.sleep(5)
+    memory.loop.run_until_complete(polling())
     memory.loop.close()
