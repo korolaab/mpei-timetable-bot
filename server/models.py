@@ -91,7 +91,7 @@ class Memory:
         while True:
             async with self.lock: self.users = {}
             self.log("Active users was cleared")
-            await asyncio.sleep(5)
+            await asyncio.sleep(3600)
 
     def polling(self):
         self.loop.create_task(self.__polling_notifier__())
