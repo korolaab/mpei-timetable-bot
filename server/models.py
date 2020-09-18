@@ -89,7 +89,7 @@ class Memory:
     async def __autoclear_memory__(self):
         self.log("AutoClear started")
         while True:
-            with self.lock: self.users = {}
+            async with self.lock: self.users = {}
             self.log("Active users was cleared")
             await asyncio.sleep(5)
 
