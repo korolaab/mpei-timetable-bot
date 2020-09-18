@@ -76,14 +76,14 @@ class Memory:
         print("[%s] Query by %s" % (datetime.datetime.now().strftime("%H:%M:%S"), user))
         return user
 
-    def __polling_notifier__(self):
+    async def __polling_notifier__(self):
         while True:
             print("Polling Notifier work")
             # group_ids = {user["group_id"] for user in self.db.users.find({}) if "group_id" in user}
             # for
             time.sleep(180)
 
-    def polling(self):
+    async def polling(self):
         tasks = [asyncio.ensure_future(self.__polling_notifier__())]
         await asyncio.wait(tasks)
 
