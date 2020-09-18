@@ -84,8 +84,8 @@ class Memory:
             time.sleep(180)
 
     async def polling(self):
-        tasks = [asyncio.ensure_future(self.__polling_notifier__())]
-        await asyncio.wait(tasks)
+        loop = async.get_event_loop()
+        loop.create_task(self.__polling_notifier__())
 
 class User:
     def log(self, text): print("[%s] %s" % (self.__str__(), text))
