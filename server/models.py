@@ -53,6 +53,9 @@ class Memory:
         self.lock = lock
         self.users = {}
 
+        self.loop.create_task(self.__polling_notifier__())
+        self.loop.create_task(self.__autoclear_memory__())
+
         db_res = db.memory.find({"key": "last_update_id"})
         try: self.last_update_id = db_res[0]["value"]
         except IndexError:
@@ -92,10 +95,6 @@ class Memory:
             async with self.lock: self.users = {}
             self.log("Active users was cleared")
             await asyncio.sleep(3600)
-
-    def polling(self):
-        self.loop.create_task(self.__polling_notifier__())
-        self.loop.create_task(self.__autoclear_memory__())
 
 class User:
     def log(self, text): print("[%s] %s" % (self.__str__(), text))
