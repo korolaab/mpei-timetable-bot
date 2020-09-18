@@ -1,4 +1,3 @@
-from bs4 import BeautifulSoup
 from telebot import TeleBot, types, apihelper
 import datetime
 import requests
