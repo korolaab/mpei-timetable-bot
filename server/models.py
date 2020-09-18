@@ -78,13 +78,14 @@ class Memory:
 
     def __polling_notifier__(self):
         while True:
-            pass
-            time.sleep(10)
+            print("Polling Notifier work")
+            # group_ids = {user["group_id"] for user in self.db.users.find({}) if "group_id" in user}
+            # for
+            time.sleep(180)
 
-    def polling_notifier(self):
-        self.nthread = threading.Thread(target=self.__polling_notifier__, args=[])
-        self.nthread.daemon = True
-        self.nthread.start()
+    def polling(self):
+        tasks = [asyncio.ensure_future(self.__polling_notifier__())]
+        await asyncio.wait(tasks)
 
 class User:
     def log(self, text): print("[%s] %s" % (self.__str__(), text))
