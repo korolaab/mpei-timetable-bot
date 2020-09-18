@@ -5,6 +5,7 @@ import uuid
 import requests
 import models
 
+mloop = asyncio.get_event_loop()
 memory = models.Memory()
 
 async def handle_update(update):
@@ -146,6 +147,7 @@ async def handle_update(update):
     return True
 
 async def polling():
+    mloop.create_task(memory.polling())
     while True:
         res = requests.get("https://api.telegram.org/bot%s/getUpdates?offset=%s&timeout=80" % (config.TELEGRAM_BOT_KEY, memory.last_update_id + 1), timeout=120).json()
         if res["ok"]:
@@ -158,6 +160,5 @@ async def polling():
         await asyncio.sleep(.001)
 
 if __name__ == '__main__':
-    mloop = asyncio.get_event_loop()
-    mloop.run_until_complete([polling(), memory.polling()])
+    mloop.run_until_complete(polling())
     mloop.close()
