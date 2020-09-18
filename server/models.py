@@ -48,6 +48,7 @@ class Memory:
     def __init__(self):
         self.db = db
         self.loop = asyncio.get_event_loop()
+        self.loop.create_task(self.__polling_notifier__())
         self.lock = lock
         self.users = {}
 
@@ -83,9 +84,6 @@ class Memory:
             # group_ids = {user["group_id"] for user in self.db.users.find({}) if "group_id" in user}
             # for
             time.sleep(180)
-
-    async def polling(self):
-        self.loop.create_task(self.__polling_notifier__())
 
 class User:
     def log(self, text): print("[%s] %s" % (self.__str__(), text))

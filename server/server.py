@@ -146,7 +146,6 @@ async def handle_update(update):
     return True
 
 async def polling():
-    memory.polling()
     while True:
         res = requests.get("https://api.telegram.org/bot%s/getUpdates?offset=%s&timeout=80" % (config.TELEGRAM_BOT_KEY, memory.last_update_id + 1), timeout=120).json()
         if res["ok"]:
@@ -159,5 +158,7 @@ async def polling():
         await asyncio.sleep(.001)
 
 if __name__ == '__main__':
-    memory.loop.run_until_complete(polling())
+    memory.loop.create_task(polling())
+    memory.loop.run_forever()
+    while True: time.sleep(5)
     memory.loop.close()
