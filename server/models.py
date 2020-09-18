@@ -47,6 +47,7 @@ def get_group_id(name):
 class Memory:
     def __init__(self):
         self.db = db
+        self.loop = asyncio.get_event_loop()
         self.lock = lock
         self.users = {}
 
@@ -84,8 +85,7 @@ class Memory:
             time.sleep(180)
 
     async def polling(self):
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.__polling_notifier__())
+        self.loop.create_task(self.__polling_notifier__())
 
 class User:
     def log(self, text): print("[%s] %s" % (self.__str__(), text))
