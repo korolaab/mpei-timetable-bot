@@ -146,6 +146,7 @@ async def handle_update(update):
     return True
 
 async def polling():
+    memory.polling()
     while True:
         res = requests.get("https://api.telegram.org/bot%s/getUpdates?offset=%s&timeout=80" % (config.TELEGRAM_BOT_KEY, memory.last_update_id + 1), timeout=120).json()
         if res["ok"]:
