@@ -2,7 +2,6 @@ FROM python:latest
 
 ADD server.py /server/
 ADD models.py /server/
-ADD handlers.py /server/
 ADD config.py /server/
 ADD requirements.txt /server/
 
