@@ -87,13 +87,14 @@ async def handle_update(update):
 Кто сделал этого бота? <a href="https://gurov.co/">gurov.co</a>
 
 <i>Донат:</i>
-<b>QIWI</b> +79255549461
+<b>QIWI/BANK</b> +79255549461
 <b>BITCOIN</b> (сообщением ниже, для удобства копирования)
 
 По всем вопросам обращайтесь к @psylopunk""" % memory.db.users.count_documents({}), \
                 disable_web_page_preview=None, \
                 reply_markup=models.get_inline_keyboard([ \
                 [{"text": "Написать администратору", "url": "https://t.me/psylopunk"}],
+                [{"text": "Исходный код (репозиторий)", "url": "https://github.com/psylopunk/mpei-timetable-bot"}],
                 [{"text": "На главную 🔙", "callback_data": "home"}]
             ]))
             user.send_message("<code>1QDXmdfA7jW3JDewoAvWB5hn66eXrp1aNw</code>")
