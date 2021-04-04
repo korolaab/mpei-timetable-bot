@@ -7,11 +7,12 @@ import threading
 import uuid
 import config
 import qrcode
+import httpx
 import time
 
 bot = TeleBot(config.TELEGRAM_BOT_KEY)
 db = pymongo.MongoClient(config.MONGO_URI).mpeitt
-lock = asyncio.Lock()
+lastdown = datetime.datetime.now()
 
 def get_default_inline_keyboard(user):
     return get_inline_keyboard([ \
@@ -47,12 +48,10 @@ class Memory:
 
     def __init__(self):
         self.db = db
-        self.loop = asyncio.get_event_loop()
-        self.lock = lock
         self.users = {}
 
-        self.loop.create_task(self.__polling_notifier__())
-        self.loop.create_task(self.__autoclear_memory__())
+        # self.loop.create_task(self.__polling_notifier__())
+        # self.loop.create_task(self.__autoclear_memory__())
 
         db_res = db.memory.find({"key": "last_update_id"})
         try: self.last_update_id = db_res[0]["value"]
@@ -80,19 +79,19 @@ class Memory:
         print("[%s] Query by %s" % (datetime.datetime.now().strftime("%H:%M:%S"), user))
         return user
 
-    async def __polling_notifier__(self):
-        while True:
-            self.log("Polling Notifier work")
-            # group_ids = {user["group_id"] for user in self.db.users.find({}) if "group_id" in user}
-            # for
-            await asyncio.sleep(180)
-
-    async def __autoclear_memory__(self):
-        self.log("AutoClear started")
-        while True:
-            async with self.lock: self.users = {}
-            self.log("Active users was cleared")
-            await asyncio.sleep(3600)
+    # async def __polling_notifier__(self):
+    #     while True:
+    #         self.log("Polling Notifier work")
+    #         # group_ids = {user["group_id"] for user in self.db.users.find({}) if "group_id" in user}
+    #         # for
+    #         await asyncio.sleep(180)
+    #
+    # async def __autoclear_memory__(self):
+    #     self.log("AutoClear started")
+    #     while True:
+    #         async with self.lock: self.users = {}
+    #         self.log("Active users was cleared")
+    #         await asyncio.sleep(3600)
 
 class User:
     def log(self, text): print("[%s] %s" % (self.__str__(), text))
@@ -214,8 +213,8 @@ class User:
             [{"text": "На главную 🔙", "callback_data": "home"}]
         ]))
 
-    def send_timetable(self, date_obj):
-        day = self.get_timetable_json(date_obj)
+    async def send_timetable(self, date_obj):
+        day = await self.get_timetable_json(date_obj)
         lessons_message = ""
         time_now = datetime.datetime.now()
         for lesson in day:
@@ -254,16 +253,16 @@ class User:
         ], row_width=3))
 
     def send_share(self):
-        qr = qrcode.QRCode(version=4, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=3)
-        qr.add_data("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group.encode("utf8").hex()) if self.group else ""))
-        qr_file = "%s" % uuid.uuid4()
-        qr.make_image(fill_color="black", back_color="white").save("/data/qr_codes/%s.png" % qr_file)
+        # qr = qrcode.QRCode(version=4, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=3)
+        # qr.add_data("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group.encode("utf8").hex()) if self.group else ""))
+        # qr_file = "%s" % uuid.uuid4()
+        # qr.make_image(fill_color="black", back_color="white").save("/data/qr_codes/%s.png" % qr_file)
         self.edit_message("""💎 <b>Поделиться с друзьями</b>
 
-Покажи своему другу QR-код сообщением ниже или перешли ему это сообщение с ссылкой
+Отправь это сообщение целиком или ссылку отдельно в беседу своей группы или другу, с которым хочешь поделиться
 
 %s""" % ("https://t.me/mpei_timetable_bot%s" % (("?start=%s" % self.group.encode("utf8").hex()) if self.group else "")), disable_web_page_preview=True, reply_markup=get_inline_keyboard([[{"text": "На главную 🔙", "callback_data": "home"}]]))
-        with open("/data/qr_codes/%s.png" % qr_file, "rb") as file: self.send_photo(file)
+        # with open("/data/qr_codes/%s.png" % qr_file, "rb") as file: self.send_photo(file)
 
     def send_welcome(self, message=None):
         self.clear_action()
@@ -281,11 +280,22 @@ class User:
             self.message_id = m.message_id
             db.users.update_one({"_id": self.db_id}, {"$set": {"message_id": m.message_id}})
 
-    def get_timetable_json(self, date_obj):
+    async def get_timetable_json(self, date_obj):
+        global lastdown
         if not self.group_id: return False
+
+        if (datetime.datetime.now() - lastdown).total_seconds() < 60:
+            print((datetime.datetime.now() - lastdown).total_seconds())
+            raise Exception('down')
+
         datestrf = date_obj.strftime("%Y.%m.%d")
         # TODO request exceptions
-        res = requests.get("http://ts.mpei.ru/api/schedule/group/%s" % self.group_id, {"start": datestrf, "finish": datestrf, "lng": 1}).json()
+        try:
+            async with httpx.AsyncClient() as client:
+                res = (await client.get("http://ts.mpei.ru/api/schedule/group/%s" % self.group_id, params={"start": datestrf, "finish": datestrf, "lng": 1})).json()
+        except Exception as e:
+            lastdown = datetime.datetime.now()
+            raise e
         # print(res)
         lessons = []
         for lesson in res:

@@ -4,6 +4,7 @@ import asyncio
 import uuid
 import requests
 import models
+import httpx
 
 memory = models.Memory()
 
@@ -13,17 +14,24 @@ async def handle_update(update):
     if "callback_query" in data:
         data = data["callback_query"]
         user = memory.get_user_by_chat(data["message"]["chat"])
-        user.answer_callback(data["id"])
         callback_data = data["data"]
+        if 'timetable_mem' not in callback_data:
+            user.answer_callback(data["id"])
         # print("Callback data: %s" % callback_data)
         if callback_data == "timetable_mem":
             if not user.group_id:
                 user.send_welcome("⚠️ <b>Нет сохраненной группы</b>\n\nℹ️ <i>Найдите свою группу с помощью кнопок ниже</i>")
                 return True
-            user.send_timetable(datetime.datetime.now())
+            try:
+                await user.send_timetable(datetime.datetime.now())
+            except:
+                user.answer_callback(data['id'], text='Сервера МЭИ лежат, но ты держись :(')
         elif "timetable_mem_" in callback_data:
             tstamp = int(callback_data.replace("timetable_mem_", ""))
-            user.send_timetable(datetime.datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))
+            try:
+                await user.send_timetable(datetime.datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))
+            except:
+                user.answer_callback(data['id'], text='Сервера МЭИ лежат, но ты держись :(')
         elif callback_data == "timetable_search":
             user.action = "timetable_search_input"
             user.send_message("👉 Введите название Вашей группы\n\n<i>Пример:</i> ИЭ-46-20", reply_markup=models.get_keyboard([["Отмена"]]))
@@ -147,17 +155,27 @@ async def handle_update(update):
     return True
 
 async def polling():
-    while True:
-        res = requests.get("https://api.telegram.org/bot%s/getUpdates?offset=%s&timeout=8" % (config.TELEGRAM_BOT_KEY, memory.last_update_id + 1), timeout=10).json()
-        if res["ok"]:
-            if res["result"]:
-                updates = res["result"]
-                async with memory.lock: memory.set_last_update_id(updates[-1]["update_id"])
-                tasks = [asyncio.ensure_future(handle_update(update)) for update in updates]
-                await asyncio.wait(tasks)
-        else: print("getUpdates failure: %s" % res)
-        await asyncio.sleep(.001)
+    async with httpx.AsyncClient() as client:
+        while True:
+            # print('p1')
+            try:
+                res = (await client.get(
+                    f'https://api.telegram.org/bot{config.TELEGRAM_BOT_KEY}/getUpdates?offset={memory.last_update_id + 1}'
+                )).json()
+            except Exception as e:
+                print(f'Error [{e}] (caused by polling)')
+
+            if not res['ok']:
+                print(res)
+                continue
+
+            updates = res["result"]
+            if updates:
+                memory.set_last_update_id(updates[-1]["update_id"])
+                for update in updates:
+                    await handle_update(update)
+            await asyncio.sleep(0.01)
 
 if __name__ == '__main__':
-    memory.loop.run_until_complete(polling())
-    memory.loop.close()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(polling())
