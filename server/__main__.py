@@ -31,7 +31,7 @@ async def handle_update(update):
                     text='Сервера МЭИ недоступны'
                 )
         elif 'timetable_mem_' in callback_data:
-            tstamp = int(callback_data.replace('timetable_mem', ''))
+            tstamp = int(callback_data.replace('timetable_mem_', ''))
             try:
                 await user.send_timetable(datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))
             except Exception as e:
@@ -105,9 +105,9 @@ async def handle_update(update):
             memory.log(f'|^| ERROR |^|: {e}')
             user.save_message(data['message_id'])
 
-        if user.telegram_id not in [1748150734]:
-            await user.send_message('⚠️ <b>Бот будет доступен через пару дней, Вы получите уведомление</b>')
-            return True
+        # if user.telegram_id not in [1748150734]:
+        #     await user.send_message('⚠️ <b>Бот будет доступен через пару дней, Вы получите уведомление</b>')
+        #     return True
 
         if text != '/start':
             user.save_message(data['message_id'])
