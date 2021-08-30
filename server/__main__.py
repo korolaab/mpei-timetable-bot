@@ -180,7 +180,7 @@ async def polling():
                 continue
 
             updates = res['result']
-            print(len(updates))
+            # print(len(updates))
             if updates:
                 memory.set_last_update_id(updates[-1]['update_id'])
                 for update in updates:
