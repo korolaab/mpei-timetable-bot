@@ -1,6 +1,4 @@
-wheel
-setuptools
 pymongo
 sanic
-pyTelegramBotAPI
-qrcode[pil]
+aiogram
+dnspython

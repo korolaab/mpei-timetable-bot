@@ -7,3 +7,7 @@ mids
 group_counter.py
 transfer_database.py
 users.json
+zld/
+.idea/
+
+logs

@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   server:
-    build: server/
+    build: zld/
     environment:
       - PYTHONUNBUFFERED=1
     volumes:
