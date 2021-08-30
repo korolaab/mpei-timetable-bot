@@ -69,13 +69,16 @@ class Memory:
             user = self.users[chat['id']]
 
         if not user.first_name:
-            self.first_name = chat['first_name']
+            updated_fields = {}
+            for key in ['first_name', 'last_name', 'username', 'phone']:
+                if key in chat:
+                    updated_fields[key] = chat[key]
+                    if key == 'first_name':
+                        self.first_name = chat['first_name']
             db.users.update_one({
                 '_id': user._id
             }, {
-                '$set': {
-                    'first_name': chat['first_name']
-                }
+                '$set': updated_fields
             })
 
         self.log(f'<- {user}')
