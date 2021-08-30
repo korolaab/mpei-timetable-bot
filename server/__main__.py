@@ -122,7 +122,7 @@ async def handle_update(update):
                 return True
             if user.action == 'timetable_search_input':
                 group_id, group_name = get_group_id(text)
-                if not group_id:
+                if not (group_id and group_name):
                     await user.send_message(
                         '⚠️ <b>Группа не найдена</b>\n\n👉 Введите название Вашей группы',
                         reply_markup=get_keyboard([["Отмена"]])
