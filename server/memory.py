@@ -67,5 +67,16 @@ class Memory:
             self.users[chat['id']] = user
         else:
             user = self.users[chat['id']]
+
+        if not user.first_name:
+            self.first_name = chat['first_name']
+            db.users.update_one({
+                '_id': user._id
+            }, {
+                '$set': {
+                    'first_name': chat['first_name']
+                }
+            })
+
         self.log(f'<- {user}')
         return user

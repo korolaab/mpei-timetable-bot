@@ -5,3 +5,4 @@ from .keyboards import get_inline_keyboard, \
                         get_default_inline_keyboard, \
                         get_weekday_name, \
                         get_keyboard
+from .mass_send import mass_send
