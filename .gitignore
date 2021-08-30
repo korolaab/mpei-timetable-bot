@@ -2,7 +2,6 @@ dump.json
 config.py
 set_webhook.py
 *.pyc
-mass_send.py
 mids
 group_counter.py
 transfer_database.py
