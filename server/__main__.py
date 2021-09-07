@@ -2,7 +2,7 @@ from storage import db
 from config import TELEGRAM_API_KEY
 from memory import Memory, User
 from functions import get_keyboard, get_group_id, get_inline_keyboard, get_default_inline_keyboard
-from datetime import datetime
+from datetime import datetime, timedelta
 import asyncio
 import httpx
 
@@ -33,7 +33,7 @@ async def handle_update(update):
         elif 'timetable_mem_' in callback_data:
             tstamp = int(callback_data.replace('timetable_mem_', ''))
             try:
-                await user.send_timetable(datetime.utcfromtimestamp(tstamp) + datetime.timedelta(hours=3))
+                await user.send_timetable(datetime.utcfromtimestamp(tstamp) + timedelta(hours=3))
             except Exception as e:
                 user.log(f'Servers MPEI is offline, error: {e} (caused by send_timetable)')
                 await user.answer_callback(

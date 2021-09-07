@@ -57,20 +57,28 @@ async def get_timetable_json(user, date_obj):
         })
         raise e
 
-    return [
+    lessons = [
         {
             'name': lesson['discipline'],
             'type': lesson['kindOfWork'],
             'place': f"{lesson['auditorium']} ({lesson['building'] if 'building' in lesson else 'нет информации'})",
             'lecturer': lesson['lecturer'],
-            'beginLesson': date_obj.replace(
+            'begin_lesson': date_obj.replace(
                 hour=int(lesson['beginLesson'].split(':')[0]),
                 minute=int(lesson['beginLesson'].split(':')[1])
             ),
-           'endLesson': date_obj.replace(
+           'end_lesson': date_obj.replace(
                 hour=int(lesson['endLesson'].split(':')[0]),
                 minute=int(lesson['endLesson'].split(':')[1])
-            )
+            ),
+            'group_id': user.group_id
         } for lesson in res
     ]
+
+    # TODO: delete lessons this day from db
+    # db.lessons.insert_many(lessons)
+
+    # print(lessons)
+
+    return lessons
 

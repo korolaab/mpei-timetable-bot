@@ -1,8 +1,8 @@
 from storage import db
 from config import TELEGRAM_API_KEY
 from aiogram import Bot
-from functions import log, get_default_inline_keyboard, get_keyboard, get_inline_keyboard
-from datetime import datetime
+from functions import log, get_default_inline_keyboard, get_keyboard, get_inline_keyboard, get_weekday_name, get_timetable_json
+from datetime import datetime, timedelta
 
 bot = Bot(token=TELEGRAM_API_KEY)
 
@@ -184,6 +184,67 @@ class User:
                 'history_messages_id': self.history_messages_id
             }
         })
+
+    async def send_timetable(self, date_obj):
+        day = await get_timetable_json(self, date_obj)
+        lessons_message = ''
+        time_now = datetime.now()
+        for lesson in day:
+            if time_now < lesson['begin_lesson']:
+                lessons_message += '⚪️ '
+            elif time_now > lesson['begin_lesson'] and time_now < lesson['end_lesson']:
+                lessons_message += '🟡 '
+            elif time_now > lesson['end_lesson']:
+                lessons_message += '🟢 '
+            else:
+                lessons_message += 'ERR!'
+
+            _two_endl = '\n\n'
+            lessons_message += f"""<b>{lesson['name']}</b>
+      <i>{lesson['begin_lesson'].strftime('%H:%M')} - {lesson['end_lesson'].strftime('%H:%M')}</i>
+      📍 {lesson['place']}
+      👨‍🏫 {lesson['lecturer'] if '!' not in lesson['lecturer'] else '<i>Нет информации</i>'}
+      <code>{lesson['type']}</code>
+
+"""
+        return await self.edit_message(
+                f"""🔰 <b>Расписание на {date_obj.strftime('%d.%m')}, {get_weekday_name(date_obj)}</b>
+<i>Информация обновлена {time_now.strftime('%H:%M')}</i>
+
+{lessons_message if lessons_message else f'🌀 <b>В этот день нет занятий</b>{_two_endl}'}🟡 <b>Пара идет</b>
+🟢 <b>Пара закончилась</b>""",
+                reply_markup=get_inline_keyboard([
+                    [
+                        {
+                            'text': f'◀️ {(date_obj - timedelta(days=1)).strftime("%d.%m")}, {get_weekday_name(date_obj - timedelta(days=1))}',
+                            'callback_data': f'timetable_mem_{int((date_obj - timedelta(days=1)).timestamp())}'
+                        },
+                        {
+                            'text': f'Обновить',
+                            'callback_data': f'timetable_mem_{int(date_obj.timestamp())}'
+                        },
+                        {
+                            'text': f'{(date_obj + timedelta(days=1)).strftime("%d.%m")}, {get_weekday_name(date_obj + timedelta(days=1))} ▶️',
+                            'callback_data': f'timetable_mem_{int((date_obj + timedelta(days=1)).timestamp())}'
+                        }
+                    ],
+                    [
+                        {
+                            'text': f'⏪ {(date_obj - timedelta(days=7)).strftime("%d.%m")}, {get_weekday_name(date_obj - timedelta(days=7))}',
+                            'callback_data': f'timetable_mem_{int((date_obj - timedelta(days=7)).timestamp())}'
+                        },
+                        {
+                            'text': f'Сегодня',
+                            'callback_data': f'timetable_mem_{int(datetime.now().timestamp())}'
+                        } if datetime.now().strftime('%d.%m.%Y') != date_obj.strftime('%d.%m.%Y') else {},
+                        {
+                            'text': f'{(date_obj + timedelta(days=7)).strftime("%d.%m")}, {get_weekday_name(date_obj + timedelta(days=7))} ⏩',
+                            'callback_data': f'timetable_mem_{int((date_obj + timedelta(days=7)).timestamp())}'
+                        }
+                    ],
+                    [{'text': 'На главную 🔙', 'callback_data': 'home'}]
+                ])
+            )
 
     @classmethod
     def from_tid(cls, tid):
