@@ -104,6 +104,7 @@ async def handle_update(update):
             memory.log(f'Invalid message: {data}')
             memory.log(f'|^| ERROR |^|: {e}')
             user.save_message(data['message_id'])
+            return True
 
         # if user.telegram_id not in [1748150734]:
         #     await user.send_message('⚠️ <b>Бот будет доступен через пару дней, Вы получите уведомление</b>')
@@ -184,7 +185,10 @@ async def polling():
             if updates:
                 memory.set_last_update_id(updates[-1]['update_id'])
                 for update in updates:
-                    await handle_update(update)
+                    try:
+                        await handle_update(update)
+                    except Exception as e:
+                        print(f'Error [{e}] (caused by handle_update)')
 
             await asyncio.sleep(.01)
 
