@@ -172,7 +172,7 @@ async def polling():
                     )
                 ).json()
             except Exception as e:
-                print(f'Error [{e}] (caused by polling.request')
+                print(f'Error [{e}] (caused by polling.request)')
                 continue
 
             if not res['ok']:

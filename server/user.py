@@ -97,6 +97,8 @@ class User:
                 **kwargs
             )
         except Exception as e:
+            if f'{e}'.strip() == 'Message to edit not found':
+                await self.send_welcome()
             self.log(f'Error (cause.editMessage): {e}')
             return False
 
@@ -189,6 +191,7 @@ class User:
         day = await get_timetable_json(self, date_obj)
         lessons_message = ''
         time_now = datetime.now()
+        _two_endl = '\n\n'
         for lesson in day:
             if time_now < lesson['begin_lesson']:
                 lessons_message += '⚪️ '
@@ -199,7 +202,6 @@ class User:
             else:
                 lessons_message += 'ERR!'
 
-            _two_endl = '\n\n'
             lessons_message += f"""<b>{lesson['name']}</b>
       <i>{lesson['begin_lesson'].strftime('%H:%M')} - {lesson['end_lesson'].strftime('%H:%M')}</i>
       📍 {lesson['place']}
