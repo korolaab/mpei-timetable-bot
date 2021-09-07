@@ -200,7 +200,7 @@ if __name__ == '__main__':
     loop.create_task(
         polling()
     )
-    loop.create_task(
-        notification_polling()
-    )
+    # loop.create_task(
+    #     notification_polling()
+    # )
     loop.run_forever()
