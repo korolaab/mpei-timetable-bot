@@ -171,7 +171,7 @@ class User:
                     'callback_data': 'setting_toggle_lessonNotification_beginning'
                 }],
                 [{
-                    'text': 'На главную 🔙',
+                    'text': 'На главную ⌘',
                     'callback_data': 'home'
                 }]
             ])
@@ -244,7 +244,7 @@ class User:
                             'callback_data': f'timetable_mem_{int((date_obj + timedelta(days=7)).timestamp())}'
                         }
                     ],
-                    [{'text': 'На главную 🔙', 'callback_data': 'home'}]
+                    [{'text': 'На главную ⌘', 'callback_data': 'home'}]
                 ])
             )
 

@@ -88,7 +88,7 @@ async def handle_update(update):
                 reply_markup=get_inline_keyboard([
                     [{'text': 'Написать администратору', 'url': 'https://t.me/psylopunk'}],
                     [{'text': 'Исходный код (репозиторий)', 'url': 'https://github.com/psylopunk/mpei-timetable-bot'}],
-                    [{'text': 'На главную 🔙', 'callback_data': 'home'}]
+                    [{'text': 'На главную ⌘', 'callback_data': 'home'}]
                 ])
             )
             await user.send_message('<code>1QDXmdfA7jW3JDewoAvWB5hn66eXrp1aNw</code>')
@@ -192,9 +192,15 @@ async def polling():
 
             await asyncio.sleep(.01)
 
+# async def notification_polling():
+
+
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.create_task(
         polling()
+    )
+    loop.create_task(
+        notification_polling()
     )
     loop.run_forever()
