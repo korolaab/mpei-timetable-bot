@@ -10,3 +10,5 @@ zld/
 .idea/
 
 logs
+
+.DS_Store

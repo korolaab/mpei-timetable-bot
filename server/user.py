@@ -190,7 +190,7 @@ class User:
     async def send_timetable(self, date_obj):
         day = await get_timetable_json(self, date_obj)
         lessons_message = ''
-        time_now = datetime.now()
+        time_now = datetime.now() + timedelta(hours=3)
         _two_endl = '\n\n'
         for lesson in day:
             if time_now < lesson['begin_lesson']:

@@ -65,7 +65,7 @@ async def get_timetable_json(user, date_obj):
             'lecturer': lesson['lecturer'],
             'begin_lesson': date_obj.replace(
                 hour=int(lesson['beginLesson'].split(':')[0]),
-                minute=int(lesson['beginLesson'].split(':')[1])
+                minute=int(lesson['beginLesson'].split(':')[1]),
             ),
            'end_lesson': date_obj.replace(
                 hour=int(lesson['endLesson'].split(':')[0]),
