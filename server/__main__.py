@@ -80,10 +80,6 @@ async def handle_update(update):
 
 🎓 Нашим ботом пользуется <b>{db.users.count_documents({})} студентов</b>
 
-<i>Донат:</i>
-<b>QIWI/BANK</b> +79255549461
-<b>BITCOIN</b> (сообщением ниже, для удобства копирования)
-
 По всем вопросам обращайтесь к @psylopunk""",
                 reply_markup=get_inline_keyboard([
                     [{'text': 'Написать администратору', 'url': 'https://t.me/psylopunk'}],
@@ -91,7 +87,6 @@ async def handle_update(update):
                     [{'text': 'На главную ⌘', 'callback_data': 'home'}]
                 ])
             )
-            await user.send_message('<code>1QDXmdfA7jW3JDewoAvWB5hn66eXrp1aNw</code>')
         elif callback_data == 'home':
             await user.send_welcome()
         return True
